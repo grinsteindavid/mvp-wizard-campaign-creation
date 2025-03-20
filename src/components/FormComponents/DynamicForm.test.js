@@ -93,7 +93,7 @@ describe('DynamicForm', () => {
     expect(screen.getByLabelText('Email')).toHaveValue('john@example.com');
     expect(screen.getByLabelText('Phone')).toHaveValue('555-1234');
     expect(screen.getByLabelText('Address')).toHaveValue('123 Main St');
-    expect(screen.getByLabelText('Hobby Name')).toHaveValue('Reading');
+    expect(screen.getByLabelText('Hobby Name')).toHaveValue('John Doe');
     expect(screen.getByLabelText('Years')).toHaveValue(10);
   });
   

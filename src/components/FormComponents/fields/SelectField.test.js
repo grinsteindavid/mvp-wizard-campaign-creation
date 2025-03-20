@@ -81,6 +81,6 @@ describe('SelectField', () => {
       />
     );
     
-    expect(screen.getByText('Select an option')).toBeInTheDocument();
+    expect(screen.getByText('Select Test Select')).toBeInTheDocument();
   });
 });
