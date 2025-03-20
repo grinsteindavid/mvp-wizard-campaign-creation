@@ -14,17 +14,23 @@
     "yup": "^1.6.1"
   },
   "devDependencies": {
-    "gh-pages": "^6.3.0",
-    "react-scripts": "5.0.1",
+    "@swc/core": "^1.11.11",
+    "@swc/jest": "^0.2.37",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",
-    "@testing-library/user-event": "^13.5.0"
+    "@testing-library/user-event": "^13.5.0",
+    "gh-pages": "^6.3.0",
+    "identity-obj-proxy": "^3.0.0",
+    "jest-watch-typeahead": "^2.2.2",
+    "react-scripts": "5.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "jest --config jest.config.js --silent --verbose",
+    "test:watch": "jest --watch --config jest.config.js --silent --verbose",
+    "test:coverage": "jest --coverage --config jest.config.js --silent --verbose",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
@@ -47,5 +53,4 @@
       "last 1 safari version"
     ]
   }
-  
 }
