@@ -3,7 +3,7 @@ import { HashRouter as Router } from 'react-router-dom';
 import styled from 'styled-components';
 import './App.css';
 import { WizardProvider } from './contexts/WizardContext';
-import Wizard from './components/Wizard/Wizard';
+import Wizard from './components/Wizard';
 
 const AppContainer = styled.div`
   min-height: 100vh;
