@@ -90,6 +90,7 @@
 - Use snapshot testing sparingly
 - Create test utilities for common testing patterns
 - Implement E2E tests with playwright for critical paths
+- SWC/JEST can have conflicts with spyOn
 
 ## Build & Deployment
 - Optimize bundle size with code splitting
