@@ -52,7 +52,7 @@ const Button = styled.button`
 `;
 
 const CampaignFormStep = ({ trafficSourceContext }) => {
-  const { trafficSource, campaignData, updateCampaignData, prevStep, nextStep } = useWizard();
+  const { trafficSource, prevStep, nextStep } = useWizard();
   
   // Access the traffic source context that was passed via props from the parent
   // This means we're only initializing the hooks for the selected traffic source
@@ -70,7 +70,13 @@ const CampaignFormStep = ({ trafficSourceContext }) => {
   });
 
   const handleFormChange = (newData) => {
-    updateCampaignData(newData);
+    // Use the traffic source context's updateField method instead of wizard context
+    if (isContextValid && currentSource.updateField) {
+      // For each field in the new data, update it in the traffic source context
+      Object.entries(newData).forEach(([field, value]) => {
+        currentSource.updateField(field, value);
+      });
+    }
   };
 
   // If the required context is missing or invalid, show an error message
@@ -101,9 +107,9 @@ const CampaignFormStep = ({ trafficSourceContext }) => {
       
       <DynamicForm
         fields={currentSource.fields}
-        values={campaignData}
+        values={currentSource.state || {}}
         onChange={handleFormChange}
-        errors={{}}
+        errors={currentSource.state?.errors || {}}
       />
       
       <ButtonContainer>

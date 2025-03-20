@@ -192,9 +192,7 @@ const renderFieldValue = (name, value, fields, parentPath = '') => {
 };
 
 const ReviewStep = ({ trafficSourceContext }) => {
-  const { trafficSource: sourceId, campaignData, prevStep, setValidationResult, resetWizard } = useWizard();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const { trafficSource: sourceId, prevStep, resetWizard } = useWizard();
   const [validationErrors, setValidationErrors] = useState(null);
   
   // Access the traffic source context that was passed via props from the parent
@@ -202,21 +200,30 @@ const ReviewStep = ({ trafficSourceContext }) => {
   const currentSource = trafficSourceContext;
 
   const handleSubmit = () => {
-    setIsSubmitting(true);
+    // Set submitting state in the traffic source context
+    currentSource.setSubmitting(true);
+    
+    // Check if the traffic source context has campaign data
+    if (!currentSource || !currentSource.state) {
+      currentSource.setSubmitting(false);
+      setValidationErrors({ general: 'No campaign data available' });
+      return;
+    }
     
     // Validate the campaign data
-    const validationResult = validateCampaign(sourceId, campaignData);
-    setValidationResult(validationResult);
+    const validationResult = validateCampaign(sourceId, currentSource.state);
+    
+    // Use the traffic source context's setValidationResult
+    currentSource.setValidationResult(validationResult);
     
     if (validationResult.isValid) {
       // Simulate API call to create campaign
-      setTimeout(() => {
-        setIsSubmitting(false);
-        setIsSubmitted(true);
-        console.log('Campaign created:', campaignData);
-      }, 1500);
+      // In a real app, this would be an async API call
+      console.log('Campaign created:', currentSource.state);
+      currentSource.setSubmitting(false);
+      currentSource.setSubmitted(true);
     } else {
-      setIsSubmitting(false);
+      currentSource.setSubmitting(false);
       setValidationErrors(validationResult.errors);
     }
   };
@@ -229,11 +236,12 @@ const ReviewStep = ({ trafficSourceContext }) => {
   const renderedFields = useMemo(() => {
     // Safe check for currentSource and its fields
     const fields = currentSource?.fields || {};
+    const campaignData = currentSource?.state || {};
     
     return Object.keys(fields).map(fieldName => {
-      return renderFieldValue(fieldName, campaignData?.[fieldName], fields);
+      return renderFieldValue(fieldName, campaignData[fieldName], fields);
     });
-  }, [currentSource, campaignData]);
+  }, [currentSource]);
   
   // If no valid traffic source is available, show an error message
   if (!currentSource) {
@@ -265,7 +273,7 @@ const ReviewStep = ({ trafficSourceContext }) => {
         </ErrorContainer>
       )}
       
-      {isSubmitted ? (
+      {currentSource.state.isSubmitted ? (
         <>
           <SuccessMessage>
             Campaign created successfully!
@@ -278,15 +286,15 @@ const ReviewStep = ({ trafficSourceContext }) => {
         </>
       ) : (
         <ButtonContainer>
-          <Button onClick={prevStep} disabled={isSubmitting}>
+          <Button onClick={prevStep} disabled={currentSource.state.isSubmitting}>
             Back
           </Button>
           <Button 
             primary 
             onClick={handleSubmit} 
-            disabled={isSubmitting}
+            disabled={currentSource.state.isSubmitting}
           >
-            {isSubmitting ? 'Creating Campaign...' : 'Create Campaign'}
+            {currentSource.state.isSubmitting ? 'Creating Campaign...' : 'Create Campaign'}
           </Button>
         </ButtonContainer>
       )}

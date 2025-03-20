@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { useWizard } from '../../contexts/WizardContext';
 import { TrafficSourceFactory } from '../../contexts/TrafficSourceFactory';
@@ -83,7 +83,15 @@ const Wizard = () => {
   const isTrafficSourceSelected = !!trafficSource;
   
   // Log the current state for debugging
-  console.log('Wizard render state:', { currentStep, trafficSource, isTrafficSourceSelected });
+  console.log('Wizard render state:', { currentStep, trafficSource, isTrafficSourceSelected, source: 'navigation-only context' });
+
+  // Effect to redirect to step 0 if no traffic source is selected and we're not on step 0
+  useEffect(() => {
+    if (!isTrafficSourceSelected && currentStep > 0) {
+      console.log('No traffic source selected, redirecting to step 0 via useEffect');
+      setStep(0);
+    }
+  }, [isTrafficSourceSelected, currentStep, setStep]);
 
   // Render the current step content
   const renderStepContent = () => {
@@ -93,9 +101,8 @@ const Wizard = () => {
       // ALWAYS require a traffic source for steps after source selection
       if (!isTrafficSourceSelected) {
         console.log('No traffic source selected, redirecting to step 0');
-        // Automatically redirect back to the source selection step
-        // Use setTimeout to avoid state updates during render
-        setTimeout(() => setStep(0), 0);
+        // Use useEffect in the main component instead of setTimeout here
+        // This is handled by the useEffect in the main component
         
         return (
           <div style={{ padding: '20px', textAlign: 'center' }}>

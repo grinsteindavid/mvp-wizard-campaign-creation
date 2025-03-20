@@ -4,13 +4,17 @@ import React, { createContext, useContext, useReducer } from 'react';
 const baseInitialState = {
   campaignName: '',
   isValid: false,
-  errors: {}
+  errors: {},
+  isSubmitting: false,
+  isSubmitted: false
 };
 
 // Base reducer actions that all traffic sources will have
 const baseReducerActions = {
   UPDATE_FIELD: 'UPDATE_FIELD',
   SET_VALIDATION_RESULT: 'SET_VALIDATION_RESULT',
+  SET_SUBMITTING: 'SET_SUBMITTING',
+  SET_SUBMITTED: 'SET_SUBMITTED',
   RESET_FORM: 'RESET_FORM'
 };
 
@@ -27,6 +31,16 @@ const baseReducer = (state, action) => {
         ...state,
         isValid: action.payload.isValid,
         errors: action.payload.errors || {}
+      };
+    case baseReducerActions.SET_SUBMITTING:
+      return {
+        ...state,
+        isSubmitting: action.payload
+      };
+    case baseReducerActions.SET_SUBMITTED:
+      return {
+        ...state,
+        isSubmitted: action.payload
       };
     case baseReducerActions.RESET_FORM:
       return { ...baseInitialState };
@@ -67,6 +81,14 @@ export const createTrafficSourceProvider = (SourceContext, initialState, reducer
       dispatch({ type: baseReducerActions.SET_VALIDATION_RESULT, payload: result });
     };
     
+    const setSubmitting = (isSubmitting) => {
+      dispatch({ type: baseReducerActions.SET_SUBMITTING, payload: isSubmitting });
+    };
+    
+    const setSubmitted = (isSubmitted) => {
+      dispatch({ type: baseReducerActions.SET_SUBMITTED, payload: isSubmitted });
+    };
+    
     const resetForm = () => {
       dispatch({ type: baseReducerActions.RESET_FORM });
     };
@@ -77,6 +99,8 @@ export const createTrafficSourceProvider = (SourceContext, initialState, reducer
       fields,
       updateField,
       setValidationResult,
+      setSubmitting,
+      setSubmitted,
       resetForm,
       dispatch
     };

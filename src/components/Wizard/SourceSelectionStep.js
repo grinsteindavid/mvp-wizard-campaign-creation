@@ -101,10 +101,8 @@ const SourceSelectionStep = () => {
     setTrafficSource(trafficSource);
     
     // Go to the next step
-    setTimeout(() => {
-      console.log('Executing nextStep() with current source:', trafficSource);
-      nextStep();
-    }, 0);
+    console.log('Executing nextStep() with current source:', trafficSource);
+    nextStep();
   };
 
   return (

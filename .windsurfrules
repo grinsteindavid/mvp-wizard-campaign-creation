@@ -49,7 +49,9 @@
 - Implement proper code splitting by routes and features
 - Be mindful of potential memory overhead
 - Avoid console.log statements in production code
+- Use console.log statements for debugging and development
 - Be conscious of performance implications when using timers
+- Timers can create race conditions and unexpected behavior
 
 ## State Management
 - Use Context API for global state that changes infrequently

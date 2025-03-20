@@ -1,37 +1,21 @@
 import React, { createContext, useContext, useReducer } from 'react';
 
-// Initial state for the wizard
+// Initial state for the wizard - focusing only on navigation concerns
 const initialState = {
   currentStep: 0,
-  trafficSource: null,
-  campaignData: {},
-  isValid: false,
-  errors: {}
+  trafficSource: null, // Only needed for source selection, not for storing campaign data
+  lastCompletedStep: -1
 };
 
-// Reducer function to handle state updates
+// Reducer function to handle state updates - simplified for navigation only
 const wizardReducer = (state, action) => {
   switch (action.type) {
     case 'SET_STEP':
       return { ...state, currentStep: action.payload };
     case 'SET_TRAFFIC_SOURCE':
-      return { 
-        ...state, 
-        trafficSource: action.payload,
-        // Reset campaign data when changing traffic source
-        campaignData: {} 
-      };
-    case 'UPDATE_CAMPAIGN_DATA':
-      return { 
-        ...state, 
-        campaignData: { ...state.campaignData, ...action.payload } 
-      };
-    case 'SET_VALIDATION_RESULT':
-      return { 
-        ...state, 
-        isValid: action.payload.isValid,
-        errors: action.payload.errors || {} 
-      };
+      return { ...state, trafficSource: action.payload };
+    case 'SET_LAST_COMPLETED_STEP':
+      return { ...state, lastCompletedStep: action.payload };
     case 'RESET_WIZARD':
       return initialState;
     default:
@@ -46,7 +30,7 @@ const WizardContext = createContext();
 export const WizardProvider = ({ children }) => {
   const [state, dispatch] = useReducer(wizardReducer, initialState);
 
-  // Actions with debug logging
+  // Actions with debug logging - focused on navigation only
   const setStep = (step) => {
     console.log('WizardContext - Setting step to:', step);
     dispatch({ type: 'SET_STEP', payload: step });
@@ -55,24 +39,38 @@ export const WizardProvider = ({ children }) => {
   const setTrafficSource = (source) => {
     console.log('WizardContext - Setting traffic source to:', source);
     dispatch({ type: 'SET_TRAFFIC_SOURCE', payload: source });
-    // Debug log to verify the state was updated
-    setTimeout(() => console.log('WizardContext - Traffic source after update:', state.trafficSource), 0);
+    // Note: The state won't be updated until after this function completes
+    // and React re-renders, so we can't log the updated state here.
+    console.log('WizardContext - Traffic source update dispatched');
   };
-  const updateCampaignData = (data) => dispatch({ type: 'UPDATE_CAMPAIGN_DATA', payload: data });
-  const setValidationResult = (result) => dispatch({ type: 'SET_VALIDATION_RESULT', payload: result });
+
+  const setLastCompletedStep = (step) => {
+    dispatch({ type: 'SET_LAST_COMPLETED_STEP', payload: step });
+  };
+
   const resetWizard = () => dispatch({ type: 'RESET_WIZARD' });
 
-  const nextStep = () => setStep(state.currentStep + 1);
+  const nextStep = () => {
+    const nextStepIndex = state.currentStep + 1;
+    setStep(nextStepIndex);
+    
+    // Update last completed step if we're moving forward
+    if (state.lastCompletedStep < state.currentStep) {
+      setLastCompletedStep(state.currentStep);
+    }
+  };
+  
   const prevStep = () => setStep(state.currentStep - 1);
 
   const value = {
-    ...state,
+    currentStep: state.currentStep,
+    trafficSource: state.trafficSource,
+    lastCompletedStep: state.lastCompletedStep,
     setStep,
     nextStep,
     prevStep,
     setTrafficSource,
-    updateCampaignData,
-    setValidationResult,
+    setLastCompletedStep,
     resetWizard
   };
 
