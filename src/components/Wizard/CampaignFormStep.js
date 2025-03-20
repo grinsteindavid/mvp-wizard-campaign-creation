@@ -1,11 +1,24 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { useWizard } from '../../contexts/WizardContext';
-import { useGoogleTrafficSource } from '../../contexts/GoogleTrafficSourceContext';
-import { useRevContentTrafficSource } from '../../contexts/RevContentTrafficSourceContext';
-import { useYahooTrafficSource } from '../../contexts/YahooTrafficSourceContext';
 import { trafficSourceNames } from '../../contexts/TrafficSourceFactory';
 import DynamicForm from '../FormComponents/DynamicForm';
+
+// Styled components for navigation buttons
+const BackButton = styled.button`
+  background-color: #f1f1f1;
+  color: #333;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-size: 14px;
+  cursor: pointer;
+  margin-right: 10px;
+  
+  &:hover {
+    background-color: #e0e0e0;
+  }
+`;
 
 const StepContainer = styled.div`
   padding: 20px;
@@ -38,34 +51,46 @@ const Button = styled.button`
   }
 `;
 
-const CampaignFormStep = () => {
+const CampaignFormStep = ({ trafficSourceContext }) => {
   const { trafficSource, campaignData, updateCampaignData, prevStep, nextStep } = useWizard();
   
-  // Use the appropriate traffic source hook based on the selected source
-  const googleSource = useGoogleTrafficSource();
-  const revContentSource = useRevContentTrafficSource();
-  const yahooSource = useYahooTrafficSource();
+  // Access the traffic source context that was passed via props from the parent
+  // This means we're only initializing the hooks for the selected traffic source
+  const currentSource = trafficSourceContext;
   
-  // Use useMemo to efficiently get the current traffic source context
-  const currentSource = useMemo(() => {
-    const trafficSourceMap = {
-      'google': googleSource,
-      'revcontent': revContentSource,
-      'yahoo': yahooSource
-    };
-    return trafficSourceMap[trafficSource];
-  }, [trafficSource, googleSource, revContentSource, yahooSource]);
+  // Verify that we have the expected traffic source
+  const isContextValid = !!currentSource && typeof currentSource === 'object';
+  
+  // Log for debugging purposes
+  console.log('CampaignFormStep context check:', {
+    source: trafficSource,
+    hasContext: isContextValid,
+    contextType: typeof currentSource,
+    contextKeys: isContextValid ? Object.keys(currentSource) : 'none'
+  });
 
   const handleFormChange = (newData) => {
     updateCampaignData(newData);
   };
 
-  // If no valid traffic source is available, show an error message
-  if (!currentSource) {
+  // If the required context is missing or invalid, show an error message
+  if (!isContextValid) {
+    console.error('Traffic source context issue:', { 
+      trafficSource, 
+      hasContext: !!trafficSourceContext,
+      contextType: typeof trafficSourceContext
+    });
+    
     return (
       <StepContainer>
         <Title>Error</Title>
-        <div>Invalid or unavailable traffic source: {trafficSource}</div>
+        <div>
+          <p>Traffic source context not available: {trafficSource}</p>
+          <p>Please go back and select a traffic source to continue.</p>
+          <div style={{ marginTop: '20px' }}>
+            <BackButton onClick={prevStep}>Back to Source Selection</BackButton>
+          </div>
+        </div>
       </StepContainer>
     );
   }

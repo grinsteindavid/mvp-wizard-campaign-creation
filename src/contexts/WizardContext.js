@@ -46,9 +46,18 @@ const WizardContext = createContext();
 export const WizardProvider = ({ children }) => {
   const [state, dispatch] = useReducer(wizardReducer, initialState);
 
-  // Actions
-  const setStep = (step) => dispatch({ type: 'SET_STEP', payload: step });
-  const setTrafficSource = (source) => dispatch({ type: 'SET_TRAFFIC_SOURCE', payload: source });
+  // Actions with debug logging
+  const setStep = (step) => {
+    console.log('WizardContext - Setting step to:', step);
+    dispatch({ type: 'SET_STEP', payload: step });
+  };
+  
+  const setTrafficSource = (source) => {
+    console.log('WizardContext - Setting traffic source to:', source);
+    dispatch({ type: 'SET_TRAFFIC_SOURCE', payload: source });
+    // Debug log to verify the state was updated
+    setTimeout(() => console.log('WizardContext - Traffic source after update:', state.trafficSource), 0);
+  };
   const updateCampaignData = (data) => dispatch({ type: 'UPDATE_CAMPAIGN_DATA', payload: data });
   const setValidationResult = (result) => dispatch({ type: 'SET_VALIDATION_RESULT', payload: result });
   const resetWizard = () => dispatch({ type: 'RESET_WIZARD' });

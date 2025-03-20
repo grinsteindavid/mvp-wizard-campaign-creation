@@ -72,15 +72,39 @@ const NextButton = styled.button`
 
 const SourceSelectionStep = () => {
   const { trafficSource, setTrafficSource, nextStep } = useWizard();
+  
+  // Debug log the current traffic source
+  console.log('SourceSelectionStep - Current traffic source:', trafficSource);
 
   const handleSourceSelect = (sourceId) => {
+    // When selecting a source, set it in the context
+    console.log('Setting traffic source to:', sourceId);
     setTrafficSource(sourceId);
+    
+    // Just log that we've set it
+    console.log('Source selected, current context value should now be updated');
   };
 
   const handleNext = () => {
-    if (trafficSource) {
-      nextStep();
+    // Validate that a traffic source is selected before proceeding
+    if (!trafficSource) {
+      // Display error or notification that source selection is required
+      console.error('Traffic source selection is required before proceeding');
+      alert('Please select a traffic source before proceeding.');
+      return;
     }
+    
+    // If validation passes, proceed to next step
+    console.log('Proceeding to next step with source:', trafficSource);
+    
+    // Ensure the traffic source is set before proceeding
+    setTrafficSource(trafficSource);
+    
+    // Go to the next step
+    setTimeout(() => {
+      console.log('Executing nextStep() with current source:', trafficSource);
+      nextStep();
+    }, 0);
   };
 
   return (

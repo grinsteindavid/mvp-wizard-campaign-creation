@@ -1,13 +1,13 @@
 import React from 'react';
-import styled from 'styled-components';
 import FormField from './FormField';
 import FormGroup from './FormGroup';
 import ArrayField from './ArrayField';
+import { FormContainer } from './styled/FormElements';
 
-const FormContainer = styled.div`
-  width: 100%;
-`;
-
+/**
+ * DynamicForm component that renders a form based on a configuration object.
+ * Supports different field types including groups and arrays.
+ */
 const DynamicForm = ({ fields, values, onChange, errors }) => {
   const handleFieldChange = (name, value) => {
     onChange({ ...values, [name]: value });

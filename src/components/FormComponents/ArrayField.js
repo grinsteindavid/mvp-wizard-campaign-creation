@@ -1,76 +1,19 @@
 import React from 'react';
-import styled from 'styled-components';
 import FormField from './FormField';
+import { 
+  ArrayContainer, 
+  GroupTitle as ArrayTitle, 
+  ArrayItemContainer, 
+  ArrayItemActions, 
+  ActionButton, 
+  Button, 
+  ErrorMessage 
+} from './styled/FormElements';
 
-const ArrayContainer = styled.div`
-  margin-bottom: 20px;
-`;
-
-const ArrayTitle = styled.h3`
-  font-size: 16px;
-  margin-top: 0;
-  margin-bottom: 16px;
-  color: #333;
-`;
-
-const ItemContainer = styled.div`
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
-  padding: 16px;
-  margin-bottom: 16px;
-  background-color: #f9f9f9;
-  position: relative;
-`;
-
-const ItemHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-`;
-
-const ItemTitle = styled.h4`
-  font-size: 14px;
-  margin: 0;
-  color: #555;
-`;
-
-const RemoveButton = styled.button`
-  background-color: #f44336;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 4px 8px;
-  font-size: 12px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  
-  &:hover {
-    background-color: #d32f2f;
-  }
-`;
-
-const AddButton = styled.button`
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 8px 16px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  
-  &:hover {
-    background-color: #388e3c;
-  }
-`;
-
-const ErrorMessage = styled.div`
-  color: #e53935;
-  font-size: 12px;
-  margin-top: 4px;
-`;
-
+/**
+ * ArrayField component for handling arrays of form fields.
+ * Allows adding, removing, and editing items in the array.
+ */
 const ArrayField = ({ field, value = [], onChange, errors }) => {
   // Create a new empty item based on the field configuration
   const createEmptyItem = () => {
@@ -112,13 +55,10 @@ const ArrayField = ({ field, value = [], onChange, errors }) => {
       <ArrayTitle>{field.label}</ArrayTitle>
       
       {value.map((item, index) => (
-        <ItemContainer key={index}>
-          <ItemHeader>
-            <ItemTitle>Item {index + 1}</ItemTitle>
-            <RemoveButton onClick={() => handleRemoveItem(index)}>
-              Remove
-            </RemoveButton>
-          </ItemHeader>
+        <ArrayItemContainer key={index}>
+          <ArrayItemActions>
+            <ActionButton danger onClick={() => handleRemoveItem(index)}>×</ActionButton>
+          </ArrayItemActions>
           
           {Object.entries(field.fields).map(([fieldName, fieldConfig]) => {
             // Create a field object that FormField can use
@@ -143,12 +83,12 @@ const ArrayField = ({ field, value = [], onChange, errors }) => {
               />
             );
           })}
-        </ItemContainer>
+        </ArrayItemContainer>
       ))}
       
-      <AddButton onClick={handleAddItem}>
+      <Button onClick={handleAddItem}>
         Add {field.label.replace(/s$/, '')}
-      </AddButton>
+      </Button>
       
       {arrayError && <ErrorMessage>{arrayError}</ErrorMessage>}
     </ArrayContainer>

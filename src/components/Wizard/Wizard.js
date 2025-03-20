@@ -76,30 +76,57 @@ const steps = [
 ];
 
 const Wizard = () => {
-  // We only need currentStep for rendering the wizard navigation
-  const { currentStep } = useWizard();
+  // Get all the necessary state from the wizard context
+  const { currentStep, trafficSource, setStep } = useWizard();
+
+  // Check if traffic source is selected
+  const isTrafficSourceSelected = !!trafficSource;
+  
+  // Log the current state for debugging
+  console.log('Wizard render state:', { currentStep, trafficSource, isTrafficSourceSelected });
 
   // Render the current step content
   const renderStepContent = () => {
-    // For steps that need traffic source context, wrap them with all providers
-    // This ensures hooks can be used regardless of which traffic source is selected
-    const renderWithAllProviders = (Component) => (
-      <TrafficSourceFactory source={"google"}>
-        <TrafficSourceFactory source={"revcontent"}>
-          <TrafficSourceFactory source={"yahoo"}>
-            <Component />
-          </TrafficSourceFactory>
+    // Render with only the selected provider for better performance
+    // Now passes the traffic source context to the component as a prop
+    const renderWithSelectedProvider = (Component) => {
+      // ALWAYS require a traffic source for steps after source selection
+      if (!isTrafficSourceSelected) {
+        console.log('No traffic source selected, redirecting to step 0');
+        // Automatically redirect back to the source selection step
+        // Use setTimeout to avoid state updates during render
+        setTimeout(() => setStep(0), 0);
+        
+        return (
+          <div style={{ padding: '20px', textAlign: 'center' }}>
+            <h2>Traffic Source Required</h2>
+            <p>Please select a traffic source before proceeding.</p>
+            <p>Redirecting to source selection...</p>
+          </div>
+        );
+      }
+      
+      // Use the TrafficSourceFactory to get the appropriate context
+      // and pass it to the component as a prop
+      console.log('Rendering with traffic source:', trafficSource);
+      return (
+        <TrafficSourceFactory source={trafficSource}>
+          {(contextValue) => <Component trafficSourceContext={contextValue} />}
         </TrafficSourceFactory>
-      </TrafficSourceFactory>
-    );
+      );
+    };
     
+    // Determine which step to render
     switch (currentStep) {
       case 0:
+        // The source selection step doesn't need a traffic source context
         return <SourceSelectionStep />;
       case 1:
-        return renderWithAllProviders(CampaignFormStep);
+        // Campaign form requires traffic source context
+        return renderWithSelectedProvider(CampaignFormStep);
       case 2:
-        return renderWithAllProviders(ReviewStep);
+        // Review step requires traffic source context
+        return renderWithSelectedProvider(ReviewStep);
       default:
         return <div>Unknown step</div>;
     }

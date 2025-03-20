@@ -1,9 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import styled from 'styled-components';
 import { useWizard } from '../../contexts/WizardContext';
-import { useGoogleTrafficSource } from '../../contexts/GoogleTrafficSourceContext';
-import { useRevContentTrafficSource } from '../../contexts/RevContentTrafficSourceContext';
-import { useYahooTrafficSource } from '../../contexts/YahooTrafficSourceContext';
 import { trafficSourceNames } from '../../contexts/TrafficSourceFactory';
 import { validateCampaign } from '../../services/validationService';
 
@@ -194,26 +191,15 @@ const renderFieldValue = (name, value, fields, parentPath = '') => {
   );
 };
 
-const ReviewStep = () => {
+const ReviewStep = ({ trafficSourceContext }) => {
   const { trafficSource: sourceId, campaignData, prevStep, setValidationResult, resetWizard } = useWizard();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [validationErrors, setValidationErrors] = useState(null);
   
-  // Use the appropriate traffic source hook based on the selected source
-  const googleSource = useGoogleTrafficSource();
-  const revContentSource = useRevContentTrafficSource();
-  const yahooSource = useYahooTrafficSource();
-  
-  // Use useMemo to efficiently get the current traffic source context
-  const currentSource = useMemo(() => {
-    const trafficSourceMap = {
-      'google': googleSource,
-      'revcontent': revContentSource,
-      'yahoo': yahooSource
-    };
-    return trafficSourceMap[sourceId];
-  }, [sourceId, googleSource, revContentSource, yahooSource]);
+  // Access the traffic source context that was passed via props from the parent
+  // This means we're only initializing the hooks for the selected traffic source
+  const currentSource = trafficSourceContext;
 
   const handleSubmit = () => {
     setIsSubmitting(true);

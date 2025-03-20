@@ -14,7 +14,16 @@
 - Keep related files close to each other
 - Organize CSS/styled-components near their components
 - Separate utilities, schemas, and services into dedicated directories
-- Group test files alongside the components they test
+- Each component or module has its own test file in the same directory
+  Example:
+  ```
+  src/
+  ├── components/
+  │    ├── Button/
+  │    │    ├── Button.tsx
+  │    │    ├── Button.test.tsx  // Unit test
+  │    │    ├── Button.module.css
+  
 - Use barrel exports for cleaner imports
 
 ## Code Separation
@@ -25,6 +34,7 @@
 - Constants: Application-wide constants and configuration
 - Types: TypeScript interfaces and type definitions
 - Styles: Theme configurations and global styles
+- Tests: Unit tests, integration tests, and E2E tests
 
 ## Performance Optimization
 - Use React.memo for pure functional components
@@ -37,6 +47,9 @@
 - Avoid unnecessary re-renders by managing state properly
 - Use web workers for CPU-intensive tasks
 - Implement proper code splitting by routes and features
+- Be mindful of potential memory overhead
+- Avoid console.log statements in production code
+- Be conscious of performance implications when using timers
 
 ## State Management
 - Use Context API for global state that changes infrequently

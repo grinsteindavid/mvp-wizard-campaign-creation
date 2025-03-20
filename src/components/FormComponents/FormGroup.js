@@ -1,22 +1,11 @@
 import React from 'react';
-import styled from 'styled-components';
 import FormField from './FormField';
+import { GroupContainer, GroupTitle } from './styled/FormElements';
 
-const GroupContainer = styled.div`
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
-  padding: 16px;
-  margin-bottom: 20px;
-  background-color: #f9f9f9;
-`;
-
-const GroupTitle = styled.h3`
-  font-size: 16px;
-  margin-top: 0;
-  margin-bottom: 16px;
-  color: #333;
-`;
-
+/**
+ * FormGroup component for rendering a group of related form fields.
+ * Groups fields together visually and handles nested field values.
+ */
 const FormGroup = ({ field, values, onChange, errors }) => {
   const handleFieldChange = (fieldName, fieldValue) => {
     // Update the nested field within the group
