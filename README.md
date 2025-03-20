@@ -1,6 +1,37 @@
-# Getting Started with Create React App
+# Ad Campaign Wizard
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A React-based wizard for creating ad campaigns across multiple traffic sources like Google Ads, RevContent, and Yahoo Gemini. This project provides a step-by-step interface for configuring and validating ad campaigns with different requirements based on the selected traffic source.
+
+## Project Structure
+
+```
+src/
+├── components/
+│   ├── FormComponents/     # Generic reusable form components
+│   │   ├── FormField.js    # Basic form field component
+│   │   ├── FormGroup.js    # Component for grouped fields
+│   │   ├── ArrayField.js   # Component for array fields
+│   │   └── DynamicForm.js  # Dynamic form generator
+│   └── Wizard/             # Wizard step components
+│       ├── SourceSelectionStep.js  # Traffic source selection
+│       ├── CampaignFormStep.js     # Campaign configuration
+│       ├── ReviewStep.js           # Review and submit
+│       └── Wizard.js               # Main wizard component
+├── contexts/
+│   ├── WizardContext.js    # Global wizard state management
+│   └── TrafficSourceContext.js  # Traffic source configuration
+└── services/
+    └── validationService.js  # Joi validation for campaigns
+```
+
+## Features
+
+- Multi-step wizard interface with progress tracking
+- Dynamic form generation based on traffic source
+- Different form field types (text, select, checkbox, arrays, etc.)
+- Form validation using Joi
+- Context-based state management
+- Responsive design with styled-components
 
 ## Available Scripts
 
@@ -68,3 +99,4 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+# mvp-wizard-campaign-creation
