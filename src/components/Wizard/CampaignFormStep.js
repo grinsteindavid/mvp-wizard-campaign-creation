@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { useWizard } from '../../contexts/WizardContext';
 import { useGoogleTrafficSource } from '../../contexts/GoogleTrafficSourceContext';
@@ -46,30 +46,30 @@ const CampaignFormStep = () => {
   const revContentSource = useRevContentTrafficSource();
   const yahooSource = useYahooTrafficSource();
   
-  // Determine which traffic source context to use
-  let currentSource;
-  switch (trafficSource) {
-    case 'google':
-      currentSource = googleSource;
-      break;
-    case 'revcontent':
-      currentSource = revContentSource;
-      break;
-    case 'yahoo':
-      currentSource = yahooSource;
-      break;
-    default:
-      return <div>Invalid traffic source selected</div>;
-  }
-  
-  if (!currentSource) {
-    return <div>Traffic source context not available</div>;
-  }
+  // Use useMemo to efficiently get the current traffic source context
+  const currentSource = useMemo(() => {
+    const trafficSourceMap = {
+      'google': googleSource,
+      'revcontent': revContentSource,
+      'yahoo': yahooSource
+    };
+    return trafficSourceMap[trafficSource];
+  }, [trafficSource, googleSource, revContentSource, yahooSource]);
 
   const handleFormChange = (newData) => {
     updateCampaignData(newData);
   };
 
+  // If no valid traffic source is available, show an error message
+  if (!currentSource) {
+    return (
+      <StepContainer>
+        <Title>Error</Title>
+        <div>Invalid or unavailable traffic source: {trafficSource}</div>
+      </StepContainer>
+    );
+  }
+  
   return (
     <StepContainer>
       <Title>Configure {trafficSourceNames[trafficSource]} Campaign</Title>

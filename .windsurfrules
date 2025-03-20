@@ -1,0 +1,97 @@
+# React Web App Best Practices
+
+## Component Structure
+- Follow Single Responsibility Principle: each component should do one thing well
+- Create small, reusable components with clear interfaces
+- Separate presentational and container components
+- Use React hooks for stateful logic
+- Keep component files under 300 lines of code
+
+## File Organization
+- Group by feature or route instead of type
+- Use index.js files for cleaner imports
+- Consistent naming conventions (PascalCase for components)
+- Keep related files close to each other
+- Organize CSS/styled-components near their components
+- Separate utilities, schemas, and services into dedicated directories
+- Group test files alongside the components they test
+- Use barrel exports for cleaner imports
+
+## Code Separation
+- Utils: Pure functions for data manipulation and calculations
+- Schemas: Validation schemas separate from components
+- Services: API calls and external integrations
+- Hooks: Custom hooks for reusable stateful logic
+- Constants: Application-wide constants and configuration
+- Types: TypeScript interfaces and type definitions
+- Styles: Theme configurations and global styles
+
+## Performance Optimization
+- Use React.memo for pure functional components
+- React Hook "useMemo" is should not be called conditionally
+- Implement useCallback for event handlers passed to child components
+- Apply useMemo for expensive calculations
+- Use lazy loading and code splitting with React.lazy() and Suspense
+- Virtualize long lists with react-window or react-virtualized
+- Implement proper key usage in lists
+- Avoid unnecessary re-renders by managing state properly
+- Use web workers for CPU-intensive tasks
+- Implement proper code splitting by routes and features
+
+## State Management
+- Use Context API for global state that changes infrequently
+- Consider Redux for complex state with many updates
+- Keep state as local as possible
+- Normalize complex state objects
+- Use immutable state updates
+- Implement state machines for complex UI flows
+- Consider using Redux Toolkit for simpler Redux setup
+
+## Form Handling & Validation
+- Implement Joi validations in a separate validation service
+- Create reusable validation schemas
+- Validate both client-side and server-side
+- Use Formik or react-hook-form for complex forms
+- Provide immediate feedback for validation errors
+- Debounce validation for better UX
+- Separate form logic from UI components
+
+## Styling
+- Use CSS-in-JS (styled-components) for component-scoped styles
+- Implement a consistent theme system
+- Create a design system with reusable UI components
+- Use CSS variables for theme values
+- Consider responsive design from the start
+- Implement dark mode and accessibility themes
+- Create mixins for common style patterns
+
+## Testing
+- Write unit tests for utility functions
+- Test components with React Testing Library
+- Focus on testing behavior, not implementation
+- Implement integration tests for critical user flows
+- Use mock service workers for API testing
+- Maintain high test coverage for critical paths
+- Use snapshot testing sparingly
+- Create test utilities for common testing patterns
+- Implement E2E tests with playwright for critical paths
+
+## Build & Deployment
+- Optimize bundle size with code splitting
+- Enable tree shaking
+- Set up proper caching strategies
+- Implement CI/CD pipelines
+- Use environment variables for configuration
+- Implement feature flags for controlled rollouts
+- Configure proper error monitoring and logging
+- Use CDN for static assets
+
+## Accessibility
+- Ensure proper semantic HTML
+- Implement keyboard navigation
+- Add ARIA attributes where needed
+- Test with screen readers
+- Maintain sufficient color contrast
+- Support reduced motion preferences
+- Implement focus management for modals and dialogs
+- Create accessible form components

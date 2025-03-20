@@ -76,25 +76,30 @@ const steps = [
 ];
 
 const Wizard = () => {
-  const { currentStep, trafficSource } = useWizard();
+  // We only need currentStep for rendering the wizard navigation
+  const { currentStep } = useWizard();
 
   // Render the current step content
   const renderStepContent = () => {
+    // For steps that need traffic source context, wrap them with all providers
+    // This ensures hooks can be used regardless of which traffic source is selected
+    const renderWithAllProviders = (Component) => (
+      <TrafficSourceFactory source={"google"}>
+        <TrafficSourceFactory source={"revcontent"}>
+          <TrafficSourceFactory source={"yahoo"}>
+            <Component />
+          </TrafficSourceFactory>
+        </TrafficSourceFactory>
+      </TrafficSourceFactory>
+    );
+    
     switch (currentStep) {
       case 0:
         return <SourceSelectionStep />;
       case 1:
-        return (
-          <TrafficSourceFactory source={trafficSource}>
-            <CampaignFormStep />
-          </TrafficSourceFactory>
-        );
+        return renderWithAllProviders(CampaignFormStep);
       case 2:
-        return (
-          <TrafficSourceFactory source={trafficSource}>
-            <ReviewStep />
-          </TrafficSourceFactory>
-        );
+        return renderWithAllProviders(ReviewStep);
       default:
         return <div>Unknown step</div>;
     }

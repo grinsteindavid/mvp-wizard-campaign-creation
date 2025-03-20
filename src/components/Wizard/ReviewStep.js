@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import styled from 'styled-components';
 import { useWizard } from '../../contexts/WizardContext';
 import { useGoogleTrafficSource } from '../../contexts/GoogleTrafficSourceContext';
@@ -109,6 +109,7 @@ const ErrorItem = styled.li`
 `;
 
 // Helper function to format values for display
+// This is a pure function that can be memoized for better performance
 const formatValue = (value, field) => {
   if (value === undefined || value === null || value === '') {
     return 'Not specified';
@@ -204,25 +205,15 @@ const ReviewStep = () => {
   const revContentSource = useRevContentTrafficSource();
   const yahooSource = useYahooTrafficSource();
   
-  // Determine which traffic source context to use
-  let currentSource;
-  switch (sourceId) {
-    case 'google':
-      currentSource = googleSource;
-      break;
-    case 'revcontent':
-      currentSource = revContentSource;
-      break;
-    case 'yahoo':
-      currentSource = yahooSource;
-      break;
-    default:
-      return <div>Invalid traffic source selected</div>;
-  }
-
-  if (!currentSource) {
-    return <div>Traffic source context not available</div>;
-  }
+  // Use useMemo to efficiently get the current traffic source context
+  const currentSource = useMemo(() => {
+    const trafficSourceMap = {
+      'google': googleSource,
+      'revcontent': revContentSource,
+      'yahoo': yahooSource
+    };
+    return trafficSourceMap[sourceId];
+  }, [sourceId, googleSource, revContentSource, yahooSource]);
 
   const handleSubmit = () => {
     setIsSubmitting(true);
@@ -248,16 +239,33 @@ const ReviewStep = () => {
     resetWizard();
   };
 
+  // Memoize the field values rendering for better performance
+  const renderedFields = useMemo(() => {
+    // Safe check for currentSource and its fields
+    const fields = currentSource?.fields || {};
+    
+    return Object.keys(fields).map(fieldName => {
+      return renderFieldValue(fieldName, campaignData?.[fieldName], fields);
+    });
+  }, [currentSource, campaignData]);
+  
+  // If no valid traffic source is available, show an error message
+  if (!currentSource) {
+    return (
+      <StepContainer>
+        <Title>Error</Title>
+        <div>Invalid or unavailable traffic source: {sourceId}</div>
+      </StepContainer>
+    );
+  }
+  
   return (
     <StepContainer>
       <Title>Review Your {trafficSourceNames[sourceId]} Campaign</Title>
       
       <ReviewSection>
         <SectionTitle>Campaign Details</SectionTitle>
-        
-        {Object.keys(currentSource.fields).map(fieldName => {
-          return renderFieldValue(fieldName, campaignData[fieldName], currentSource.fields);
-        })}
+        {renderedFields}
       </ReviewSection>
       
       {validationErrors && (
