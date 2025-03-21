@@ -1,6 +1,6 @@
 import React, { createContext } from 'react';
 import { render, screen, act } from '@testing-library/react';
-import { createTrafficSourceProvider, createUseTrafficSource, baseActions } from './BaseTrafficSourceContext';
+import { createDataSourceProvider, createUseDataSource, baseActions } from './BaseDataSourceContext';
 
 // Create a test context
 const TestContext = createContext();
@@ -25,8 +25,8 @@ const testReducer = (state, action) => {
 
 // Test fields
 const testFields = {
-  campaignName: {
-    label: 'Campaign Name',
+  projectName: {
+    label: 'Project Name',
     type: 'text',
     required: true
   },
@@ -38,14 +38,14 @@ const testFields = {
 };
 
 // Create provider and hook for testing
-const TestProvider = createTrafficSourceProvider(
+const TestProvider = createDataSourceProvider(
   TestContext,
   testInitialState,
   testReducer,
   testFields
 );
 
-const useTestContext = createUseTrafficSource(TestContext, 'Test');
+const useTestContext = createUseDataSource(TestContext, 'Test');
 
 // Test component that uses the context
 const TestComponent = () => {
@@ -62,7 +62,7 @@ const TestComponent = () => {
   return (
     <div>
       <div data-testid="test-field">{state.testField}</div>
-      <div data-testid="campaign-name">{state.campaignName}</div>
+      <div data-testid="project-name">{state.projectName}</div>
       <div data-testid="is-valid">{state.isValid.toString()}</div>
       <div data-testid="is-submitting">{state.isSubmitting.toString()}</div>
       <div data-testid="is-submitted">{state.isSubmitted.toString()}</div>
@@ -73,10 +73,10 @@ const TestComponent = () => {
         Update Field
       </button>
       <button 
-        data-testid="update-campaign-name" 
-        onClick={() => updateField('campaignName', 'Test Campaign')}
+        data-testid="update-project-name" 
+        onClick={() => updateField('projectName', 'Test Project')}
       >
-        Update Campaign Name
+        Update Project Name
       </button>
       <button 
         data-testid="set-validation" 
@@ -88,7 +88,7 @@ const TestComponent = () => {
         data-testid="set-validation-invalid" 
         onClick={() => setValidationResult({ 
           isValid: false, 
-          errors: { campaignName: 'Required field' } 
+          errors: { projectName: 'Required field' } 
         })}
       >
         Set Invalid
@@ -121,7 +121,7 @@ const TestComponent = () => {
   );
 };
 
-describe('BaseTrafficSourceContext', () => {
+describe('BaseDataSourceContext', () => {
   test('provides initial state values', () => {
     render(
       <TestProvider>
@@ -130,7 +130,7 @@ describe('BaseTrafficSourceContext', () => {
     );
 
     expect(screen.getByTestId('test-field').textContent).toBe('initial value');
-    expect(screen.getByTestId('campaign-name').textContent).toBe('');
+    expect(screen.getByTestId('project-name').textContent).toBe('');
     expect(screen.getByTestId('is-valid').textContent).toBe('false');
     expect(screen.getByTestId('is-submitting').textContent).toBe('false');
     expect(screen.getByTestId('is-submitted').textContent).toBe('false');
@@ -215,7 +215,7 @@ describe('BaseTrafficSourceContext', () => {
 
     // First make some changes
     act(() => {
-      screen.getByTestId('update-campaign-name').click();
+      screen.getByTestId('update-project-name').click();
       screen.getByTestId('set-validation').click();
       screen.getByTestId('set-submitting').click();
       screen.getByTestId('set-submitted').click();
@@ -230,7 +230,7 @@ describe('BaseTrafficSourceContext', () => {
     // Note: The baseReducer's RESET_FORM action resets to baseInitialState, not the combined initial state
     // So testField will be empty, not 'initial value'
     expect(screen.getByTestId('test-field').textContent).toBe('');
-    expect(screen.getByTestId('campaign-name').textContent).toBe('');
+    expect(screen.getByTestId('project-name').textContent).toBe('');
     expect(screen.getByTestId('is-valid').textContent).toBe('false');
     expect(screen.getByTestId('is-submitting').textContent).toBe('false');
     expect(screen.getByTestId('is-submitted').textContent).toBe('false');

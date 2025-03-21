@@ -3,7 +3,7 @@ import React, { createContext, useContext, useReducer } from 'react';
 // Initial state for the wizard - focusing only on navigation concerns
 const initialState = {
   currentStep: 0,
-  trafficSource: null, // Only needed for source selection, not for storing campaign data
+  dataSource: null, // Only needed for source selection, not for storing project data
   lastCompletedStep: -1
 };
 
@@ -12,8 +12,8 @@ const wizardReducer = (state, action) => {
   switch (action.type) {
     case 'SET_STEP':
       return { ...state, currentStep: action.payload };
-    case 'SET_TRAFFIC_SOURCE':
-      return { ...state, trafficSource: action.payload };
+    case 'SET_DATA_SOURCE':
+      return { ...state, dataSource: action.payload };
     case 'SET_LAST_COMPLETED_STEP':
       return { ...state, lastCompletedStep: action.payload };
     case 'RESET_WIZARD':
@@ -36,12 +36,12 @@ export const WizardProvider = ({ children }) => {
     dispatch({ type: 'SET_STEP', payload: step });
   };
   
-  const setTrafficSource = (source) => {
-    console.log('WizardContext - Setting traffic source to:', source);
-    dispatch({ type: 'SET_TRAFFIC_SOURCE', payload: source });
+  const setDataSource = (source) => {
+    console.log('WizardContext - Setting data source to:', source);
+    dispatch({ type: 'SET_DATA_SOURCE', payload: source });
     // Note: The state won't be updated until after this function completes
     // and React re-renders, so we can't log the updated state here.
-    console.log('WizardContext - Traffic source update dispatched');
+    console.log('WizardContext - Data source update dispatched');
   };
 
   const setLastCompletedStep = (step) => {
@@ -64,12 +64,12 @@ export const WizardProvider = ({ children }) => {
 
   const value = {
     currentStep: state.currentStep,
-    trafficSource: state.trafficSource,
+    dataSource: state.dataSource,
     lastCompletedStep: state.lastCompletedStep,
     setStep,
     nextStep,
     prevStep,
-    setTrafficSource,
+    setDataSource,
     setLastCompletedStep,
     resetWizard
   };

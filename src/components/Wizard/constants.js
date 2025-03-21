@@ -2,7 +2,7 @@
  * Wizard steps configuration
  */
 export const WIZARD_STEPS = [
-  { id: 0, label: 'Select Traffic Source' },
-  { id: 1, label: 'Configure Campaign' },
-  { id: 2, label: 'Review & Create' }
+  { id: 0, label: 'Choose Data Source' },
+  { id: 1, label: 'Set Up Project' },
+  { id: 2, label: 'Finalize & Submit' }
 ];

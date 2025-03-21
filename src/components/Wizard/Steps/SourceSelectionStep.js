@@ -1,6 +1,6 @@
 import React from 'react';
 import { useWizard } from '../../../contexts/WizardContext';
-import { availableTrafficSources } from '../../../contexts/TrafficSourceFactory';
+import { availableDataSources } from '../../../contexts/DataSourceFactory';
 import {
   StepContainer,
   Title,
@@ -13,21 +13,21 @@ import {
 } from '../styled/WizardElements';
 
 /**
- * The first step of the wizard for selecting a traffic source
+ * The first step of the wizard for choosing a data source
  */
 const SourceSelectionStep = () => {
-  const { trafficSource, setTrafficSource, nextStep } = useWizard();
+  const { dataSource, setDataSource, nextStep } = useWizard();
   
-  // Debug log the current traffic source
-  console.log('SourceSelectionStep - Current traffic source:', trafficSource);
+  // Debug log the current data source
+  console.log('SourceSelectionStep - Current data source:', dataSource);
 
   /**
-   * Handle selection of a traffic source
-   * @param {string} sourceId - ID of the selected traffic source
+   * Handle selection of a data source
+   * @param {string} sourceId - ID of the selected data source
    */
   const handleSourceSelect = (sourceId) => {
-    console.log('Setting traffic source to:', sourceId);
-    setTrafficSource(sourceId);
+    console.log('Setting data source to:', sourceId);
+    setDataSource(sourceId);
     console.log('Source selected, current context value should now be updated');
   };
 
@@ -35,31 +35,31 @@ const SourceSelectionStep = () => {
    * Handle proceeding to the next step
    */
   const handleNext = () => {
-    // Validate that a traffic source is selected before proceeding
-    if (!trafficSource) {
-      console.error('Traffic source selection is required before proceeding');
-      alert('Please select a traffic source before proceeding.');
+    // Validate that a data source is selected before proceeding
+    if (!dataSource) {
+      console.error('Data source selection is required before proceeding');
+      alert('Please select a data source before proceeding.');
       return;
     }
     
-    console.log('Proceeding to next step with source:', trafficSource);
+    console.log('Proceeding to next step with source:', dataSource);
     
-    // Ensure the traffic source is set before proceeding
-    setTrafficSource(trafficSource);
+    // Ensure the data source is set before proceeding
+    setDataSource(dataSource);
     
-    console.log('Executing nextStep() with current source:', trafficSource);
+    console.log('Executing nextStep() with current source:', dataSource);
     nextStep();
   };
 
   return (
     <StepContainer>
-      <Title>Select Traffic Source</Title>
+      <Title>Choose Data Source</Title>
       
       <SourceGrid>
-        {availableTrafficSources.map(source => (
+        {availableDataSources.map(source => (
           <SourceCard
             key={source.id}
-            selected={trafficSource === source.id}
+            selected={dataSource === source.id}
             onClick={() => handleSourceSelect(source.id)}
           >
             <SourceName>{source.name}</SourceName>
@@ -69,7 +69,7 @@ const SourceSelectionStep = () => {
       </SourceGrid>
       
       <ButtonContainer>
-        <Button primary onClick={handleNext} disabled={!trafficSource}>
+        <Button primary onClick={handleNext} disabled={!dataSource}>
           Next
         </Button>
       </ButtonContainer>

@@ -1,34 +1,34 @@
-import createGoogleSchema from './googleSchema';
+import createPrimarySchema from './primarySchema';
 
-describe('googleSchema', () => {
+describe('primarySchema', () => {
   // Create a schema object for testing
-  const schema = createGoogleSchema();
+  const schema = createPrimarySchema();
 
   // Valid test data
   const validData = {
-    campaignName: 'Test Google Campaign',
+    projectName: 'Test Primary Project',
     dailyBudget: 10,
     bidStrategy: 'cpc',
-    keywords: 'test, keywords, google',
-    adGroups: [
+    keywords: 'test, keywords, primary',
+    categoryGroups: [
       {
-        name: 'Ad Group 1',
+        name: 'Category Group 1',
         cpc: 0.5
       }
     ]
   };
 
-  test('should validate valid Google campaign data', () => {
+  test('should validate valid Primary project data', () => {
     const { error } = schema.validate(validData);
     expect(error).toBeUndefined();
   });
 
-  test('should validate multiple ad groups', () => {
+  test('should validate multiple category groups', () => {
     const data = {
       ...validData,
-      adGroups: [
-        { name: 'Ad Group 1', cpc: 0.5 },
-        { name: 'Ad Group 2', cpc: 1.0 }
+      categoryGroups: [
+        { name: 'Category Group 1', cpc: 0.5 },
+        { name: 'Category Group 2', cpc: 1.0 }
       ]
     };
     const { error } = schema.validate(data);
@@ -100,25 +100,25 @@ describe('googleSchema', () => {
     });
   });
 
-  describe('adGroups validation', () => {
-    test('should reject empty ad groups array', () => {
-      const data = { ...validData, adGroups: [] };
+  describe('categoryGroups validation', () => {
+    test('should reject empty category groups array', () => {
+      const data = { ...validData, categoryGroups: [] };
       const { error } = schema.validate(data);
       expect(error).toBeDefined();
-      expect(error.message).toContain('At least one ad group is required');
+      expect(error.message).toContain('At least one category group is required');
     });
 
-    test('should require ad groups field', () => {
-      const { adGroups, ...data } = validData;
+    test('should require category groups field', () => {
+      const { categoryGroups, ...data } = validData;
       const { error } = schema.validate(data);
       expect(error).toBeDefined();
-      expect(error.message).toContain('Ad groups are required');
+      expect(error.message).toContain('Category groups are required');
     });
 
-    test('should reject ad group without name', () => {
+    test('should reject category group without name', () => {
       const data = {
         ...validData,
-        adGroups: [
+        categoryGroups: [
           { name: 'Valid Group', cpc: 0.5 },
           { cpc: 0.5 } // This one is missing the name
         ]
@@ -128,20 +128,20 @@ describe('googleSchema', () => {
       expect(error.message).toContain('required');
     });
 
-    test('should reject ad group with invalid CPC', () => {
+    test('should reject category group with invalid CPC', () => {
       const data = {
         ...validData,
-        adGroups: [{ name: 'Ad Group 1', cpc: 0 }]
+        categoryGroups: [{ name: 'Category Group 1', cpc: 0 }]
       };
       const { error } = schema.validate(data);
       expect(error).toBeDefined();
       expect(error.message).toContain('Max CPC must be at least $0.01');
     });
 
-    test('should reject ad group without CPC', () => {
+    test('should reject category group without CPC', () => {
       const data = {
         ...validData,
-        adGroups: [{ name: 'Ad Group 1' }]
+        categoryGroups: [{ name: 'Category Group 1' }]
       };
       const { error } = schema.validate(data);
       expect(error).toBeDefined();

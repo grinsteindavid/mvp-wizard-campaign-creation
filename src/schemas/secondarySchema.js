@@ -1,8 +1,8 @@
 import Joi from 'joi';
 import baseSchema from './baseSchema';
 
-// RevContent validation schema builder
-const createRevContentSchema = () => Joi.object({
+// Secondary data source validation schema builder
+const createSecondarySchema = () => Joi.object({
   ...baseSchema,
   targetUrl: Joi.string().uri().required().messages({
     'string.uri': 'Target URL must be a valid URL',
@@ -30,4 +30,4 @@ const createRevContentSchema = () => Joi.object({
   }).required()
 });
 
-export default createRevContentSchema;
+export default createSecondarySchema;

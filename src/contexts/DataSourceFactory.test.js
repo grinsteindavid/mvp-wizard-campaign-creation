@@ -1,11 +1,11 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { 
-  TrafficSourceFactory, 
-  trafficSourceNames, 
-  trafficSourceDescriptions, 
-  availableTrafficSources 
-} from './TrafficSourceFactory';
+  DataSourceFactory, 
+  dataSourceNames, 
+  dataSourceDescriptions, 
+  availableDataSources 
+} from './DataSourceFactory';
 
 // Test component that receives context from the factory
 const TestConsumer = ({ contextValue }) => {
@@ -21,12 +21,12 @@ const TestConsumer = ({ contextValue }) => {
   );
 };
 
-describe('TrafficSourceFactory', () => {
-  test('renders Google traffic source component when source is "google"', () => {
+describe('DataSourceFactory', () => {
+  test('renders Primary data source component when source is "primary"', () => {
     render(
-      <TrafficSourceFactory source="google">
+      <DataSourceFactory source="primary">
         {(contextValue) => <TestConsumer contextValue={contextValue} />}
-      </TrafficSourceFactory>
+      </DataSourceFactory>
     );
 
     expect(screen.getByTestId('has-context').textContent).toBe('true');
@@ -35,11 +35,11 @@ describe('TrafficSourceFactory', () => {
     expect(screen.getByTestId('has-update-field').textContent).toBe('true');
   });
 
-  test('renders RevContent traffic source component when source is "revcontent"', () => {
+  test('renders Secondary data source component when source is "secondary"', () => {
     render(
-      <TrafficSourceFactory source="revcontent">
+      <DataSourceFactory source="secondary">
         {(contextValue) => <TestConsumer contextValue={contextValue} />}
-      </TrafficSourceFactory>
+      </DataSourceFactory>
     );
 
     expect(screen.getByTestId('has-context').textContent).toBe('true');
@@ -47,11 +47,11 @@ describe('TrafficSourceFactory', () => {
     expect(screen.getByTestId('has-fields').textContent).toBe('true');
   });
 
-  test('renders Yahoo traffic source component when source is "yahoo"', () => {
+  test('renders Tertiary data source component when source is "tertiary"', () => {
     render(
-      <TrafficSourceFactory source="yahoo">
+      <DataSourceFactory source="tertiary">
         {(contextValue) => <TestConsumer contextValue={contextValue} />}
-      </TrafficSourceFactory>
+      </DataSourceFactory>
     );
 
     expect(screen.getByTestId('has-context').textContent).toBe('true');
@@ -59,14 +59,14 @@ describe('TrafficSourceFactory', () => {
     expect(screen.getByTestId('has-fields').textContent).toBe('true');
   });
 
-  test('renders error message for unknown traffic source', () => {
+  test('renders error message for unknown data source', () => {
     render(
-      <TrafficSourceFactory source="unknown">
+      <DataSourceFactory source="unknown">
         {(contextValue) => <TestConsumer contextValue={contextValue} />}
-      </TrafficSourceFactory>
+      </DataSourceFactory>
     );
 
-    expect(screen.getByText('Invalid traffic source: unknown')).toBeInTheDocument();
+    expect(screen.getByText('Invalid data source: unknown')).toBeInTheDocument();
   });
 
   test('renders error message when children is not a function', () => {
@@ -75,49 +75,49 @@ describe('TrafficSourceFactory', () => {
     console.error = jest.fn();
 
     render(
-      <TrafficSourceFactory source="google">
+      <DataSourceFactory source="primary">
         <div>Not a function</div>
-      </TrafficSourceFactory>
+      </DataSourceFactory>
     );
 
-    expect(screen.getByText('Error: TrafficSourceFactory requires a function as children')).toBeInTheDocument();
+    expect(screen.getByText('Error: DataSourceFactory requires a function as children')).toBeInTheDocument();
 
     // Restore console.error
     console.error = originalError;
   });
 
-  test('trafficSourceNames contains the correct names', () => {
-    expect(trafficSourceNames).toEqual({
-      google: 'Google Ads',
-      revcontent: 'RevContent',
-      yahoo: 'Yahoo Gemini'
+  test('dataSourceNames contains the correct names', () => {
+    expect(dataSourceNames).toEqual({
+      primary: 'Primary Integration',
+      secondary: 'Content Discovery',
+      tertiary: 'Network Integration'
     });
   });
 
-  test('trafficSourceDescriptions contains the correct descriptions', () => {
-    expect(trafficSourceDescriptions).toEqual({
-      google: 'Create campaigns for Google Search and Display Network',
-      revcontent: 'Native advertising platform for content recommendation',
-      yahoo: 'Search and native advertising on Yahoo properties'
+  test('dataSourceDescriptions contains the correct descriptions', () => {
+    expect(dataSourceDescriptions).toEqual({
+      primary: 'Create projects for search and display networks',
+      secondary: 'Native discovery platform for content recommendation',
+      tertiary: 'Search and discovery on network properties'
     });
   });
 
-  test('availableTrafficSources contains all traffic sources with correct data', () => {
-    expect(availableTrafficSources).toEqual([
+  test('availableDataSources contains all data sources with correct data', () => {
+    expect(availableDataSources).toEqual([
       {
-        id: 'google',
-        name: trafficSourceNames.google,
-        description: trafficSourceDescriptions.google
+        id: 'primary',
+        name: dataSourceNames.primary,
+        description: dataSourceDescriptions.primary
       },
       {
-        id: 'revcontent',
-        name: trafficSourceNames.revcontent,
-        description: trafficSourceDescriptions.revcontent
+        id: 'secondary',
+        name: dataSourceNames.secondary,
+        description: dataSourceDescriptions.secondary
       },
       {
-        id: 'yahoo',
-        name: trafficSourceNames.yahoo,
-        description: trafficSourceDescriptions.yahoo
+        id: 'tertiary',
+        name: dataSourceNames.tertiary,
+        description: dataSourceDescriptions.tertiary
       }
     ]);
   });

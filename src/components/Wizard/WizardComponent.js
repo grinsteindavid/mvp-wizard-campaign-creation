@@ -1,9 +1,9 @@
 import React, { useEffect, useCallback, useMemo, memo } from 'react';
 import { useWizard } from '../../contexts/WizardContext';
-import { TrafficSourceFactory } from '../../contexts/TrafficSourceFactory';
+import { DataSourceFactory } from '../../contexts/DataSourceFactory';
 import { WIZARD_STEPS } from './constants';
 import SourceSelectionStep from './Steps/SourceSelectionStep';
-import CampaignFormStep from './Steps/CampaignFormStep';
+import ProjectSetupStep from './Steps/ProjectSetupStep';
 import ReviewStep from './Steps/ReviewStep';
 import {
   WizardContainer,
@@ -22,55 +22,55 @@ import {
  */
 const Wizard = () => {
   // Get all the necessary state from the wizard context
-  const { currentStep, trafficSource, setStep } = useWizard();
+  const { currentStep, dataSource, setStep } = useWizard();
 
-  // Check if traffic source is selected
-  const isTrafficSourceSelected = !!trafficSource;
+  // Check if data source is selected
+  const isDataSourceSelected = !!dataSource;
   
   // Log the current state for debugging
   console.log('Wizard render state:', { 
     currentStep, 
-    trafficSource, 
-    isTrafficSourceSelected, 
+    dataSource, 
+    isDataSourceSelected, 
     source: 'navigation-only context' 
   });
 
-  // Effect to redirect to step 0 if no traffic source is selected and we're not on step 0
+  // Effect to redirect to step 0 if no data source is selected and we're not on step 0
   useEffect(() => {
-    if (!isTrafficSourceSelected && currentStep > 0) {
-      console.log('No traffic source selected, redirecting to step 0 via useEffect');
+    if (!isDataSourceSelected && currentStep > 0) {
+      console.log('No data source selected, redirecting to step 0 via useEffect');
       setStep(0);
     }
-  }, [isTrafficSourceSelected, currentStep, setStep]);
+  }, [isDataSourceSelected, currentStep, setStep]);
 
   /**
-   * Render a step with the appropriate traffic source context provider
+   * Render a step with the appropriate data source context provider
    * @param {Component} Component - Step component to render
    * @returns {JSX.Element} - Rendered component
    */
   const renderWithSelectedProvider = useCallback((Component) => {
-    // ALWAYS require a traffic source for steps after source selection
-    if (!isTrafficSourceSelected) {
-      console.log('No traffic source selected, redirecting to step 0');
+    // ALWAYS require a data source for steps after source selection
+    if (!isDataSourceSelected) {
+      console.log('No data source selected, redirecting to step 0');
       
       return (
         <div style={{ padding: '20px', textAlign: 'center' }}>
-          <h2>Traffic Source Required</h2>
-          <p>Please select a traffic source before proceeding.</p>
+          <h2>Data Source Required</h2>
+          <p>Please choose a data source before proceeding.</p>
           <p>Redirecting to source selection...</p>
         </div>
       );
     }
     
-    // Use the TrafficSourceFactory to get the appropriate context
+    // Use the DataSourceFactory to get the appropriate context
     // and pass it to the component as a prop
-    console.log('Rendering with traffic source:', trafficSource);
+    console.log('Rendering with data source:', dataSource);
     return (
-      <TrafficSourceFactory source={trafficSource}>
-        {(contextValue) => <Component trafficSourceContext={contextValue} />}
-      </TrafficSourceFactory>
+      <DataSourceFactory source={dataSource}>
+        {(contextValue) => <Component dataSourceContext={contextValue} />}
+      </DataSourceFactory>
     );
-  }, [isTrafficSourceSelected, trafficSource]);
+  }, [isDataSourceSelected, dataSource]);
   
   /**
    * Determine which step to render based on the current step state
@@ -79,13 +79,13 @@ const Wizard = () => {
   const renderStepContent = useCallback(() => {
     switch (currentStep) {
       case 0:
-        // The source selection step doesn't need a traffic source context
+        // The source selection step doesn't need a data source context
         return <SourceSelectionStep />;
       case 1:
-        // Campaign form requires traffic source context
-        return renderWithSelectedProvider(CampaignFormStep);
+        // Project setup requires data source context
+        return renderWithSelectedProvider(ProjectSetupStep);
       case 2:
-        // Review step requires traffic source context
+        // Review step requires data source context
         return renderWithSelectedProvider(ReviewStep);
       default:
         return <div>Unknown step</div>;
@@ -123,7 +123,7 @@ const Wizard = () => {
   return (
     <WizardContainer>
       <WizardHeader>
-        <WizardTitle>Ad Campaign Wizard</WizardTitle>
+        <WizardTitle>Workflow Wizard</WizardTitle>
         {stepIndicator}
       </WizardHeader>
       

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useWizard } from '../../../contexts/WizardContext';
-import { trafficSourceNames } from '../../../contexts/TrafficSourceFactory';
+import { dataSourceNames } from '../../../contexts/DataSourceFactory';
 import DynamicForm from '../../FormComponents/DynamicForm';
 import {
   StepContainer,
@@ -10,20 +10,20 @@ import {
 } from '../styled/WizardElements';
 
 /**
- * Second step of the wizard for configuring campaign details
- * @param {object} trafficSourceContext - Context from the traffic source provider
+ * Second step of the wizard for setting up project details
+ * @param {object} dataSourceContext - Context from the data source provider
  */
-const CampaignFormStep = ({ trafficSourceContext }) => {
-  const { trafficSource, prevStep, nextStep } = useWizard();
+const ProjectSetupStep = ({ dataSourceContext }) => {
+  const { dataSource, prevStep, nextStep } = useWizard();
   
-  // Access the traffic source context that was passed via props from the parent
-  const currentSource = trafficSourceContext;
+  // Access the data source context that was passed via props from the parent
+  const currentSource = dataSourceContext;
   
-  // Verify that we have the expected traffic source
+  // Verify that we have the expected data source
   const isContextValid = !!currentSource && typeof currentSource === 'object';
   
-  console.log('CampaignFormStep context check:', {
-    source: trafficSource,
+  console.log('ProjectSetupStep context check:', {
+    source: dataSource,
     hasContext: isContextValid,
     contextType: typeof currentSource,
     contextKeys: isContextValid ? Object.keys(currentSource) : 'none'
@@ -34,9 +34,9 @@ const CampaignFormStep = ({ trafficSourceContext }) => {
    * @param {object} newData - Updated form data
    */
   const handleFormChange = (newData) => {
-    // Use the traffic source context's updateField method instead of wizard context
+    // Use the data source context's updateField method instead of wizard context
     if (isContextValid && currentSource.updateField) {
-      // For each field in the new data, update it in the traffic source context
+      // For each field in the new data, update it in the data source context
       Object.entries(newData).forEach(([field, value]) => {
         currentSource.updateField(field, value);
       });
@@ -45,18 +45,18 @@ const CampaignFormStep = ({ trafficSourceContext }) => {
 
   // If the required context is missing or invalid, show an error message
   if (!isContextValid) {
-    console.error('Traffic source context issue:', { 
-      trafficSource, 
-      hasContext: !!trafficSourceContext,
-      contextType: typeof trafficSourceContext
+    console.error('Data source context issue:', { 
+      dataSource, 
+      hasContext: !!dataSourceContext,
+      contextType: typeof dataSourceContext
     });
     
     return (
       <StepContainer>
         <Title>Error</Title>
         <div>
-          <p>Traffic source context not available: {trafficSource}</p>
-          <p>Please go back and select a traffic source to continue.</p>
+          <p>Data source context not available: {dataSource}</p>
+          <p>Please go back and choose a data source to continue.</p>
           <div style={{ marginTop: '20px' }}>
             <Button onClick={prevStep}>Back to Source Selection</Button>
           </div>
@@ -67,7 +67,7 @@ const CampaignFormStep = ({ trafficSourceContext }) => {
   
   return (
     <StepContainer>
-      <Title>Configure {trafficSourceNames[trafficSource]} Campaign</Title>
+      <Title>Set Up {dataSourceNames[dataSource]} Project</Title>
       
       <DynamicForm
         fields={currentSource.fields}
@@ -81,11 +81,11 @@ const CampaignFormStep = ({ trafficSourceContext }) => {
           Back
         </Button>
         <Button primary onClick={nextStep}>
-          Review Campaign
+          Review Project
         </Button>
       </ButtonContainer>
     </StepContainer>
   );
 };
 
-export default CampaignFormStep;
+export default ProjectSetupStep;

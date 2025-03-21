@@ -30,11 +30,11 @@ All styled components are centralized in `styled/FormElements.js` for consistent
 ```jsx
 import React, { useState } from 'react';
 import DynamicForm from './components/FormComponents/DynamicForm';
-import { validateCampaign } from './services/validationService';
+import { validateProject } from './services/validationService';
 import { prepareInitialValues } from './utils/formUtils';
 
-const MyForm = ({ trafficSource }) => {
-  // Define form fields based on traffic source
+const MyForm = ({ dataSource }) => {
+  // Define form fields based on data source
   const fields = {
     campaignName: {
       type: 'text',
@@ -61,7 +61,7 @@ const MyForm = ({ trafficSource }) => {
     setValues(newValues);
     
     // Validate the form
-    const { isValid, errors } = validateCampaign(trafficSource, newValues);
+    const { isValid, errors } = validateProject(dataSource, newValues);
     setErrors(errors);
   };
   

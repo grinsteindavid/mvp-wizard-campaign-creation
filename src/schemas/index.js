@@ -1,17 +1,26 @@
 import baseSchema from './baseSchema';
-import createGoogleSchema from './googleSchema';
-import createRevContentSchema from './revContentSchema';
-import createYahooSchema from './yahooSchema';
+import createPrimarySchema from './primarySchema';
+import createSecondarySchema from './secondarySchema';
+import createTertiarySchema from './tertiarySchema';
 
-// Map of traffic sources to their validation schema creators
+// Map of data sources to their validation schema creators
 const schemaCreators = {
-  google: createGoogleSchema,
-  revcontent: createRevContentSchema,
-  yahoo: createYahooSchema
+  primary: createPrimarySchema,
+  secondary: createSecondarySchema,
+  tertiary: createTertiarySchema
 };
+
+// For backward compatibility
+const createGoogleSchema = createPrimarySchema;
+const createRevContentSchema = createSecondarySchema;
+const createYahooSchema = createTertiarySchema;
 
 export {
   baseSchema,
+  createPrimarySchema,
+  createSecondarySchema,
+  createTertiarySchema,
+  // For backward compatibility
   createGoogleSchema,
   createRevContentSchema,
   createYahooSchema,

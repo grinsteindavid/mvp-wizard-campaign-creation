@@ -1,15 +1,15 @@
 import React, { createContext, useContext, useReducer } from 'react';
 
-// Base initial state for all traffic sources
+// Base initial state for all data sources
 const baseInitialState = {
-  campaignName: '',
+  projectTitle: '',
   isValid: false,
   errors: {},
   isSubmitting: false,
   isSubmitted: false
 };
 
-// Base reducer actions that all traffic sources will have
+// Base reducer actions that all data sources will have
 const baseReducerActions = {
   UPDATE_FIELD: 'UPDATE_FIELD',
   SET_VALIDATION_RESULT: 'SET_VALIDATION_RESULT',
@@ -18,7 +18,7 @@ const baseReducerActions = {
   RESET_FORM: 'RESET_FORM'
 };
 
-// Base reducer function that all traffic sources can extend
+// Base reducer function that all data sources can extend
 const baseReducer = (state, action) => {
   switch (action.type) {
     case baseReducerActions.UPDATE_FIELD:
@@ -50,10 +50,10 @@ const baseReducer = (state, action) => {
 };
 
 // Create the base context
-const BaseTrafficSourceContext = createContext();
+const BaseDataSourceContext = createContext();
 
 // Base provider component that can be extended
-export const createTrafficSourceProvider = (SourceContext, initialState, reducer, fields) => {
+export const createDataSourceProvider = (SourceContext, initialState, reducer, fields) => {
   return ({ children }) => {
     // Combine base initial state with source-specific state
     const combinedInitialState = {
@@ -72,7 +72,7 @@ export const createTrafficSourceProvider = (SourceContext, initialState, reducer
     
     const [state, dispatch] = useReducer(combinedReducer, combinedInitialState);
     
-    // Common actions that all traffic sources will have
+    // Common actions that all data sources will have
     const updateField = (field, value) => {
       dispatch({ type: baseReducerActions.UPDATE_FIELD, field, value });
     };
@@ -113,12 +113,12 @@ export const createTrafficSourceProvider = (SourceContext, initialState, reducer
   };
 };
 
-// Create a custom hook factory for traffic source contexts
-export const createUseTrafficSource = (SourceContext, sourceName) => {
+// Create a custom hook factory for data source contexts
+export const createUseDataSource = (SourceContext, sourceName) => {
   return () => {
     const context = useContext(SourceContext);
     if (!context) {
-      throw new Error(`use${sourceName}TrafficSource must be used within a ${sourceName}TrafficSourceProvider`);
+      throw new Error(`use${sourceName}DataSource must be used within a ${sourceName}DataSourceProvider`);
     }
     return context;
   };
@@ -128,4 +128,4 @@ export const createUseTrafficSource = (SourceContext, sourceName) => {
 export const baseActions = baseReducerActions;
 
 // Export the base context for potential direct use
-export default BaseTrafficSourceContext;
+export default BaseDataSourceContext;

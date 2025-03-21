@@ -5,34 +5,34 @@ describe('baseSchema', () => {
   // Create a schema object for testing
   const schema = Joi.object(baseSchema);
 
-  test('should validate valid campaign name', () => {
-    const validData = { campaignName: 'Test Campaign' };
+  test('should validate valid project name', () => {
+    const validData = { projectName: 'Test Project' };
     const { error } = schema.validate(validData);
     expect(error).toBeUndefined();
   });
 
-  test('should reject empty campaign name', () => {
-    const invalidData = { campaignName: '' };
+  test('should reject empty project name', () => {
+    const invalidData = { projectName: '' };
     const { error } = schema.validate(invalidData);
     expect(error).toBeDefined();
-    expect(error.message).toContain('Campaign name is required');
+    expect(error.message).toContain('Project name is required');
   });
 
-  test('should reject campaign name shorter than 3 characters', () => {
-    const invalidData = { campaignName: 'AB' };
+  test('should reject project name shorter than 3 characters', () => {
+    const invalidData = { projectName: 'AB' };
     const { error } = schema.validate(invalidData);
     expect(error).toBeDefined();
-    expect(error.message).toContain('Campaign name must be at least 3 characters');
+    expect(error.message).toContain('Project name must be at least 3 characters');
   });
 
-  test('should reject campaign name longer than 50 characters', () => {
-    const invalidData = { campaignName: 'A'.repeat(51) };
+  test('should reject project name longer than 50 characters', () => {
+    const invalidData = { projectName: 'A'.repeat(51) };
     const { error } = schema.validate(invalidData);
     expect(error).toBeDefined();
-    expect(error.message).toContain('Campaign name cannot exceed 50 characters');
+    expect(error.message).toContain('Project name cannot exceed 50 characters');
   });
 
-  test('should require campaign name field', () => {
+  test('should require project name field', () => {
     const invalidData = {};
     const { error } = schema.validate(invalidData);
     expect(error).toBeDefined();

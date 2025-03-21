@@ -1,46 +1,46 @@
 import { createContext } from 'react';
-import { createTrafficSourceProvider, createUseTrafficSource, baseActions } from './BaseTrafficSourceContext';
+import { createDataSourceProvider, createUseDataSource, baseActions } from './BaseDataSourceContext';
 
 // Create the context
-const YahooTrafficSourceContext = createContext();
+const TertiaryDataSourceContext = createContext();
 
-// Initial state specific to Yahoo
+// Initial state specific to Tertiary Data Source
 const initialState = {
-  campaignObjective: '',
+  projectObjective: '',
   startDate: '',
   endDate: '',
-  budget: {
+  resources: {
     amount: '',
     type: ''
   },
-  bidding: {
+  optimization: {
     strategy: '',
     amount: ''
   }
 };
 
-// Yahoo-specific reducer actions
-const yahooActions = {
-  UPDATE_BUDGET: 'UPDATE_BUDGET',
-  UPDATE_BIDDING: 'UPDATE_BIDDING'
+// Tertiary-specific reducer actions
+const tertiaryActions = {
+  UPDATE_RESOURCES: 'UPDATE_RESOURCES',
+  UPDATE_OPTIMIZATION: 'UPDATE_OPTIMIZATION'
 };
 
-// Yahoo-specific reducer
-const yahooReducer = (state, action) => {
+// Tertiary-specific reducer
+const tertiaryReducer = (state, action) => {
   switch (action.type) {
-    case yahooActions.UPDATE_BUDGET:
+    case tertiaryActions.UPDATE_RESOURCES:
       return {
         ...state,
-        budget: {
-          ...state.budget,
+        resources: {
+          ...state.resources,
           [action.field]: action.value
         }
       };
-    case yahooActions.UPDATE_BIDDING:
+    case tertiaryActions.UPDATE_OPTIMIZATION:
       return {
         ...state,
-        bidding: {
-          ...state.bidding,
+        optimization: {
+          ...state.optimization,
           [action.field]: action.value
         }
       };
@@ -50,16 +50,16 @@ const yahooReducer = (state, action) => {
   }
 };
 
-// Field definitions for Yahoo
-const yahooFields = {
-  campaignName: {
-    label: 'Campaign Name',
+// Field definitions for Tertiary Data Source
+const tertiaryFields = {
+  projectTitle: {
+    label: 'Project Title',
     type: 'text',
     required: true,
     validation: { min: 3, max: 50 }
   },
-  campaignObjective: {
-    label: 'Campaign Objective',
+  projectObjective: {
+    label: 'Project Objective',
     type: 'select',
     required: true,
     options: [
@@ -78,8 +78,8 @@ const yahooFields = {
     type: 'date',
     required: false
   },
-  budget: {
-    label: 'Budget',
+  resources: {
+    label: 'Resources',
     type: 'group',
     fields: {
       amount: {
@@ -89,7 +89,7 @@ const yahooFields = {
         validation: { min: 10 }
       },
       type: {
-        label: 'Budget Type',
+        label: 'Resource Type',
         type: 'select',
         required: true,
         options: [
@@ -99,12 +99,12 @@ const yahooFields = {
       }
     }
   },
-  bidding: {
-    label: 'Bidding',
+  optimization: {
+    label: 'Optimization',
     type: 'group',
     fields: {
       strategy: {
-        label: 'Bid Strategy',
+        label: 'Optimization Strategy',
         type: 'select',
         required: true,
         options: [
@@ -113,7 +113,7 @@ const yahooFields = {
         ]
       },
       amount: {
-        label: 'Bid Amount',
+        label: 'Target Value',
         type: 'number',
         required: true,
         validation: { min: 0.01, step: 0.01 },
@@ -124,18 +124,18 @@ const yahooFields = {
 };
 
 // Create the provider component
-export const YahooTrafficSourceProvider = createTrafficSourceProvider(
-  YahooTrafficSourceContext,
+export const TertiaryDataSourceProvider = createDataSourceProvider(
+  TertiaryDataSourceContext,
   initialState,
-  yahooReducer,
-  yahooFields
+  tertiaryReducer,
+  tertiaryFields
 );
 
 // Create the custom hook
-export const useYahooTrafficSource = createUseTrafficSource(YahooTrafficSourceContext, 'Yahoo');
+export const useTertiaryDataSource = createUseDataSource(TertiaryDataSourceContext, 'Tertiary');
 
 // Export actions for use in components
-export const yahooTrafficSourceActions = {
+export const tertiaryDataSourceActions = {
   ...baseActions,
-  ...yahooActions
+  ...tertiaryActions
 };

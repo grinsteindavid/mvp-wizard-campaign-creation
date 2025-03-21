@@ -33,8 +33,8 @@ function App() {
       <WizardProvider>
         <AppContainer>
           <Header>
-            <Title>Ad Campaign Creator</Title>
-            <Subtitle>Create and manage your ad campaigns across multiple traffic sources</Subtitle>
+            <Title>Project Creator</Title>
+            <Subtitle>Create and manage your projects across multiple data sources</Subtitle>
           </Header>
           
           <Wizard />

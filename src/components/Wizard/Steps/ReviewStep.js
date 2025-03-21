@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useWizard } from '../../../contexts/WizardContext';
-import { trafficSourceNames } from '../../../contexts/TrafficSourceFactory';
-import { validateCampaign } from '../../../services/validationService';
+import { dataSourceNames } from '../../../contexts/DataSourceFactory';
+import { validateProject } from '../../../services/validationService';
 import ReviewFieldRenderer from '../components/ReviewFieldRenderer';
 import { prepareFieldValue } from '../utils/formatHelpers';
 import {
@@ -19,40 +19,40 @@ import {
 } from '../styled/WizardElements';
 
 /**
- * Final step of the wizard to review campaign details and submit
- * @param {object} trafficSourceContext - Context from the traffic source provider
+ * Final step of the wizard to review project details and submit
+ * @param {object} dataSourceContext - Context from the data source provider
  */
-const ReviewStep = ({ trafficSourceContext }) => {
-  const { trafficSource: sourceId, prevStep, resetWizard } = useWizard();
+const ReviewStep = ({ dataSourceContext }) => {
+  const { dataSource: sourceId, prevStep, resetWizard } = useWizard();
   const [validationErrors, setValidationErrors] = useState(null);
   
-  // Access the traffic source context that was passed via props from the parent
-  const currentSource = trafficSourceContext;
+  // Access the data source context that was passed via props from the parent
+  const currentSource = dataSourceContext;
 
   /**
-   * Handle campaign submission
+   * Handle project submission
    */
   const handleSubmit = () => {
-    // Set submitting state in the traffic source context
+    // Set submitting state in the data source context
     currentSource.setSubmitting(true);
     
-    // Check if the traffic source context has campaign data
+    // Check if the data source context has project data
     if (!currentSource || !currentSource.state) {
       currentSource.setSubmitting(false);
-      setValidationErrors({ general: 'No campaign data available' });
+      setValidationErrors({ general: 'No project data available' });
       return;
     }
     
-    // Validate the campaign data
-    const validationResult = validateCampaign(sourceId, currentSource.state);
+    // Validate the project data
+    const validationResult = validateProject(sourceId, currentSource.state);
     
-    // Use the traffic source context's setValidationResult
+    // Use the data source context's setValidationResult
     currentSource.setValidationResult(validationResult);
     
     if (validationResult.isValid) {
-      // Simulate API call to create campaign
+      // Simulate API call to create project
       // In a real app, this would be an async API call
-      console.log('Campaign created:', currentSource.state);
+      console.log('Project created:', currentSource.state);
       currentSource.setSubmitting(false);
       currentSource.setSubmitted(true);
     } else {
@@ -62,7 +62,7 @@ const ReviewStep = ({ trafficSourceContext }) => {
   };
 
   /**
-   * Handle starting a new campaign
+   * Handle starting a new project
    */
   const handleStartOver = () => {
     resetWizard();
@@ -72,29 +72,29 @@ const ReviewStep = ({ trafficSourceContext }) => {
   const preparedFields = useMemo(() => {
     // Safe check for currentSource and its fields
     const fields = currentSource?.fields || {};
-    const campaignData = currentSource?.state || {};
+    const projectData = currentSource?.state || {};
     
     return Object.keys(fields).map(fieldName => {
-      return prepareFieldValue(fieldName, campaignData[fieldName], fields);
+      return prepareFieldValue(fieldName, projectData[fieldName], fields);
     }).filter(Boolean); // Filter out null entries
   }, [currentSource]);
   
-  // If no valid traffic source is available, show an error message
+  // If no valid data source is available, show an error message
   if (!currentSource) {
     return (
       <StepContainer>
         <Title>Error</Title>
-        <div>Invalid or unavailable traffic source: {sourceId}</div>
+        <div>Invalid or unavailable data source: {sourceId}</div>
       </StepContainer>
     );
   }
   
   return (
     <StepContainer>
-      <Title>Review Your {trafficSourceNames[sourceId]} Campaign</Title>
+      <Title>Review Your {dataSourceNames[sourceId]} Project</Title>
       
       <ReviewSection>
-        <SectionTitle>Campaign Details</SectionTitle>
+        <SectionTitle>Project Details</SectionTitle>
         {preparedFields.map(fieldData => (
           <ReviewFieldRenderer key={fieldData.key} fieldData={fieldData} />
         ))}
@@ -114,11 +114,11 @@ const ReviewStep = ({ trafficSourceContext }) => {
       {currentSource.state.isSubmitted ? (
         <>
           <SuccessMessage>
-            Campaign created successfully!
+            Project created successfully!
           </SuccessMessage>
           <ButtonContainer>
             <Button primary onClick={handleStartOver}>
-              Create Another Campaign
+              Create Another Project
             </Button>
           </ButtonContainer>
         </>
@@ -132,7 +132,7 @@ const ReviewStep = ({ trafficSourceContext }) => {
             onClick={handleSubmit} 
             disabled={currentSource.state.isSubmitting}
           >
-            {currentSource.state.isSubmitting ? 'Creating Campaign...' : 'Create Campaign'}
+            {currentSource.state.isSubmitting ? 'Creating Project...' : 'Create Project'}
           </Button>
         </ButtonContainer>
       )}

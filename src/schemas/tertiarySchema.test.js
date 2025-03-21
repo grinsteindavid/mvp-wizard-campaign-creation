@@ -1,13 +1,13 @@
-import createYahooSchema from './yahooSchema';
+import createTertiarySchema from './tertiarySchema';
 
-describe('yahooSchema', () => {
+describe('tertiarySchema', () => {
   // Create a schema object for testing
-  const schema = createYahooSchema();
+  const schema = createTertiarySchema();
 
   // Valid test data
   const validData = {
-    campaignName: 'Test Yahoo Campaign',
-    campaignObjective: 'visits',
+    projectName: 'Test Tertiary Project',
+    projectObjective: 'visits',
     startDate: '2025-01-01',
     endDate: '2025-02-01',
     budget: {
@@ -20,34 +20,34 @@ describe('yahooSchema', () => {
     }
   };
 
-  test('should validate valid Yahoo campaign data', () => {
+  test('should validate valid Tertiary project data', () => {
     const { error } = schema.validate(validData);
     expect(error).toBeUndefined();
   });
 
-  describe('campaignObjective validation', () => {
-    test('should validate all valid campaign objectives', () => {
+  describe('projectObjective validation', () => {
+    test('should validate all valid project objectives', () => {
       const validObjectives = ['visits', 'awareness', 'conversions'];
       
       validObjectives.forEach(objective => {
-        const data = { ...validData, campaignObjective: objective };
+        const data = { ...validData, projectObjective: objective };
         const { error } = schema.validate(data);
         expect(error).toBeUndefined();
       });
     });
 
-    test('should reject invalid campaign objective', () => {
-      const data = { ...validData, campaignObjective: 'invalid' };
+    test('should reject invalid project objective', () => {
+      const data = { ...validData, projectObjective: 'invalid' };
       const { error } = schema.validate(data);
       expect(error).toBeDefined();
-      expect(error.message).toContain('Please select a valid campaign objective');
+      expect(error.message).toContain('Please select a valid project objective');
     });
 
-    test('should require campaign objective field', () => {
-      const { campaignObjective, ...data } = validData;
+    test('should require project objective field', () => {
+      const { projectObjective, ...data } = validData;
       const { error } = schema.validate(data);
       expect(error).toBeDefined();
-      expect(error.message).toContain('Campaign objective is required');
+      expect(error.message).toContain('Project objective is required');
     });
   });
 

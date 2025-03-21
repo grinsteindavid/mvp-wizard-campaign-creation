@@ -9,18 +9,18 @@ describe('validationUtils', () => {
     test('should format Joi error details into object with paths as keys', () => {
       const mockError = {
         details: [
-          { path: ['campaignName'], message: 'Campaign name is required' },
+          { path: ['projectName'], message: 'Project name is required' },
           { path: ['dailyBudget'], message: 'Daily budget must be at least $5' },
-          { path: ['adGroups', 0, 'name'], message: 'Ad group name is required' }
+          { path: ['categoryGroups', 0, 'name'], message: 'Category group name is required' }
         ]
       };
       
       const result = formatValidationErrors(mockError);
       
       expect(result).toEqual({
-        'campaignName': 'Campaign name is required',
+        'projectName': 'Project name is required',
         'dailyBudget': 'Daily budget must be at least $5',
-        'adGroups.0.name': 'Ad group name is required'
+        'categoryGroups.0.name': 'Category group name is required'
       });
     });
     
@@ -42,10 +42,10 @@ describe('validationUtils', () => {
         extract: jest.fn().mockReturnValue(mockFieldSchema)
       };
       
-      const result = extractNestedSchema(mockSchema, 'campaignName');
+      const result = extractNestedSchema(mockSchema, 'projectName');
       
       expect(result).toBe(mockFieldSchema);
-      expect(mockSchema.extract).toHaveBeenCalledWith('campaignName');
+      expect(mockSchema.extract).toHaveBeenCalledWith('projectName');
     });
     
     test('should extract nested field schema', () => {
@@ -60,10 +60,10 @@ describe('validationUtils', () => {
         extract: jest.fn().mockReturnValue(mockAdGroupsSchema)
       };
       
-      const result = extractNestedSchema(mockSchema, 'adGroups.0.name');
+      const result = extractNestedSchema(mockSchema, 'categoryGroups.0.name');
       
       expect(result).toBe(mockNestedSchema);
-      expect(mockSchema.extract).toHaveBeenCalledWith('adGroups');
+      expect(mockSchema.extract).toHaveBeenCalledWith('categoryGroups');
       expect(mockAdGroupsSchema.extract).toHaveBeenCalledWith('0');
       expect(mockAdGroupSchema.extract).toHaveBeenCalledWith('name');
     });
@@ -73,7 +73,7 @@ describe('validationUtils', () => {
         extract: jest.fn().mockReturnValue(null)
       };
       
-      const result = extractNestedSchema(mockSchema, 'adGroups.0.name');
+      const result = extractNestedSchema(mockSchema, 'categoryGroups.0.name');
       
       expect(result).toBeNull();
     });

@@ -1,12 +1,12 @@
 import Joi from 'joi';
 import baseSchema from './baseSchema';
 
-// Yahoo validation schema builder
-const createYahooSchema = () => Joi.object({
+// Tertiary data source validation schema builder
+const createTertiarySchema = () => Joi.object({
   ...baseSchema,
-  campaignObjective: Joi.string().valid('visits', 'awareness', 'conversions').required().messages({
-    'any.only': 'Please select a valid campaign objective',
-    'any.required': 'Campaign objective is required'
+  projectObjective: Joi.string().valid('visits', 'awareness', 'conversions').required().messages({
+    'any.only': 'Please select a valid project objective',
+    'any.required': 'Project objective is required'
   }),
   startDate: Joi.date().iso().required().messages({
     'date.base': 'Start date must be a valid date',
@@ -44,4 +44,4 @@ const createYahooSchema = () => Joi.object({
   }).required()
 });
 
-export default createYahooSchema;
+export default createTertiarySchema;

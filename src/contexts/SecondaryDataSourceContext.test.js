@@ -1,28 +1,28 @@
 import React from 'react';
 import { render, screen, act } from '@testing-library/react';
-import { RevContentTrafficSourceProvider, useRevContentTrafficSource, revContentTrafficSourceActions } from './RevContentTrafficSourceContext';
+import { SecondaryDataSourceProvider, useSecondaryDataSource, secondaryDataSourceActions } from './SecondaryDataSourceContext';
 
-// Test component that uses the RevContent traffic source context
+// Test component that uses the Secondary data source context
 const TestComponent = () => {
   const { 
     state, 
     updateField, 
     dispatch 
-  } = useRevContentTrafficSource();
+  } = useSecondaryDataSource();
 
   return (
     <div>
-      <div data-testid="campaign-name">{state.campaignName}</div>
+      <div data-testid="project-name">{state.projectName}</div>
       <div data-testid="target-url">{state.targetUrl}</div>
       <div data-testid="bid-amount">{state.bidAmount}</div>
       <div data-testid="daily-budget">{state.dailyBudget}</div>
       <div data-testid="targeting-countries">{state.targeting.countries.length}</div>
       <div data-testid="targeting-devices">{state.targeting.devices.length}</div>
       <button 
-        data-testid="update-campaign-name" 
-        onClick={() => updateField('campaignName', 'RevContent Test Campaign')}
+        data-testid="update-project-name" 
+        onClick={() => updateField('projectName', 'RevContent Test Project')}
       >
-        Update Campaign Name
+        Update Project Name
       </button>
       <button 
         data-testid="update-target-url" 
@@ -33,7 +33,7 @@ const TestComponent = () => {
       <button 
         data-testid="add-country" 
         onClick={() => dispatch({ 
-          type: revContentTrafficSourceActions.UPDATE_TARGETING, 
+          type: secondaryDataSourceActions.UPDATE_TARGETING, 
           field: 'countries', 
           value: [...state.targeting.countries, 'US'] 
         })}
@@ -43,7 +43,7 @@ const TestComponent = () => {
       <button 
         data-testid="add-device" 
         onClick={() => dispatch({ 
-          type: revContentTrafficSourceActions.UPDATE_TARGETING, 
+          type: secondaryDataSourceActions.UPDATE_TARGETING, 
           field: 'devices', 
           value: [...state.targeting.devices, 'mobile'] 
         })}
@@ -54,15 +54,15 @@ const TestComponent = () => {
   );
 };
 
-describe('RevContentTrafficSourceContext', () => {
+describe('SecondaryDataSourceContext', () => {
   test('provides initial state values', () => {
     render(
-      <RevContentTrafficSourceProvider>
+      <SecondaryDataSourceProvider>
         <TestComponent />
-      </RevContentTrafficSourceProvider>
+      </SecondaryDataSourceProvider>
     );
 
-    expect(screen.getByTestId('campaign-name').textContent).toBe('');
+    expect(screen.getByTestId('project-name').textContent).toBe('');
     expect(screen.getByTestId('target-url').textContent).toBe('');
     expect(screen.getByTestId('bid-amount').textContent).toBe('');
     expect(screen.getByTestId('daily-budget').textContent).toBe('');
@@ -72,16 +72,16 @@ describe('RevContentTrafficSourceContext', () => {
 
   test('updateField updates a field value', () => {
     render(
-      <RevContentTrafficSourceProvider>
+      <SecondaryDataSourceProvider>
         <TestComponent />
-      </RevContentTrafficSourceProvider>
+      </SecondaryDataSourceProvider>
     );
 
     act(() => {
-      screen.getByTestId('update-campaign-name').click();
+      screen.getByTestId('update-project-name').click();
     });
 
-    expect(screen.getByTestId('campaign-name').textContent).toBe('RevContent Test Campaign');
+    expect(screen.getByTestId('project-name').textContent).toBe('RevContent Test Project');
 
     act(() => {
       screen.getByTestId('update-target-url').click();
@@ -92,9 +92,9 @@ describe('RevContentTrafficSourceContext', () => {
 
   test('UPDATE_TARGETING action updates targeting fields', () => {
     render(
-      <RevContentTrafficSourceProvider>
+      <SecondaryDataSourceProvider>
         <TestComponent />
-      </RevContentTrafficSourceProvider>
+      </SecondaryDataSourceProvider>
     );
 
     expect(screen.getByTestId('targeting-countries').textContent).toBe('0');
@@ -113,8 +113,8 @@ describe('RevContentTrafficSourceContext', () => {
     expect(screen.getByTestId('targeting-devices').textContent).toBe('1');
   });
 
-  test('revContentTrafficSourceActions exports the correct action types', () => {
-    expect(revContentTrafficSourceActions).toEqual({
+  test('secondaryDataSourceActions exports the correct action types', () => {
+    expect(secondaryDataSourceActions).toEqual({
       UPDATE_FIELD: 'UPDATE_FIELD',
       SET_VALIDATION_RESULT: 'SET_VALIDATION_RESULT',
       SET_SUBMITTING: 'SET_SUBMITTING',
@@ -124,14 +124,14 @@ describe('RevContentTrafficSourceContext', () => {
     });
   });
 
-  test('throws error when useRevContentTrafficSource is used outside of RevContentTrafficSourceProvider', () => {
+  test('throws error when useSecondaryDataSource is used outside of SecondaryDataSourceProvider', () => {
     // Suppress console.error for this test
     const originalError = console.error;
     console.error = jest.fn();
 
     expect(() => {
       render(<TestComponent />);
-    }).toThrow('useRevContentTrafficSource must be used within a RevContentTrafficSourceProvider');
+    }).toThrow('useSecondaryDataSource must be used within a SecondaryDataSourceProvider');
 
     // Restore console.error
     console.error = originalError;

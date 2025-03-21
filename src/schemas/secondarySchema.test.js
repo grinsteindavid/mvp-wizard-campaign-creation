@@ -1,12 +1,12 @@
-import createRevContentSchema from './revContentSchema';
+import createSecondarySchema from './secondarySchema';
 
-describe('revContentSchema', () => {
+describe('secondarySchema', () => {
   // Create a schema object for testing
-  const schema = createRevContentSchema();
+  const schema = createSecondarySchema();
 
   // Valid test data
   const validData = {
-    campaignName: 'Test RevContent Campaign',
+    projectName: 'Test Secondary Project',
     targetUrl: 'https://example.com',
     bidAmount: 0.05,
     dailyBudget: 10,
@@ -16,7 +16,7 @@ describe('revContentSchema', () => {
     }
   };
 
-  test('should validate valid RevContent campaign data', () => {
+  test('should validate valid Secondary project data', () => {
     const { error } = schema.validate(validData);
     expect(error).toBeUndefined();
   });

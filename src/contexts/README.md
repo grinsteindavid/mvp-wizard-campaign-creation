@@ -5,7 +5,7 @@
 This directory contains React Context providers that manage state throughout the application. The contexts are organized into two main categories:
 
 1. **Wizard Context** - Manages navigation and step progression
-2. **Traffic Source Contexts** - Manage traffic source-specific data and validation
+2. **Data Source Contexts** - Manage data source-specific data and validation
 
 ## WizardContext
 
@@ -14,7 +14,7 @@ The `WizardContext` is responsible for managing the navigation flow of the wizar
 ### Key Features
 
 - **Step Navigation**: Provides methods for moving between wizard steps (`nextStep`, `prevStep`, `setStep`)
-- **Traffic Source Selection**: Tracks the selected traffic source type
+- **Data Source Selection**: Tracks the selected data source type
 - **Progress Tracking**: Maintains the `lastCompletedStep` to track user progress
 - **Reset Functionality**: Allows resetting the wizard state
 
@@ -24,7 +24,7 @@ The `WizardContext` is responsible for managing the navigation flow of the wizar
 import { useWizard } from '../contexts/WizardContext';
 
 function MyComponent() {
-  const { currentStep, nextStep, prevStep, trafficSource } = useWizard();
+  const { currentStep, nextStep, prevStep, dataSource } = useWizard();
   
   return (
     <div>
@@ -36,40 +36,40 @@ function MyComponent() {
 }
 ```
 
-## Traffic Source Contexts
+## Data Source Contexts
 
-The application uses a factory pattern for traffic source contexts. Each traffic source has its own context that extends from the `BaseTrafficSourceContext`.
+The application uses a factory pattern for data source contexts. Each data source has its own context that extends from the `BaseDataSourceContext`.
 
-### BaseTrafficSourceContext
+### BaseDataSourceContext
 
-Provides common functionality for all traffic source contexts:
+Provides common functionality for all data source contexts:
 
 - Form field state management
 - Validation state tracking
 - Submission state management (isSubmitting, isSubmitted)
 - Error handling
 
-### Traffic Source-Specific Contexts
+### Data Source-Specific Contexts
 
-The application includes several traffic source contexts:
+The application includes several data source contexts:
 
-- **GoogleTrafficSourceContext**: Manages Google-specific campaign data
-- **YahooTrafficSourceContext**: Manages Yahoo-specific campaign data
-- **RevContentTrafficSourceContext**: Manages RevContent-specific campaign data
+- **PrimaryDataSourceContext**: Manages Google-specific campaign data
+- **SecondaryDataSourceContext**: Manages Yahoo-specific campaign data
+- **TertiaryDataSourceContext**: Manages RevContent-specific campaign data
 
 Each context extends the base functionality with source-specific fields and validation.
 
-### TrafficSourceFactory
+### DataSourceFactory
 
-The `TrafficSourceFactory` component dynamically selects and provides the appropriate traffic source context based on the selected source type.
+The `DataSourceFactory` component dynamically selects and provides the appropriate data source context based on the selected source type.
 
 ### Usage
 
 ```jsx
-import { useGoogleTrafficSource } from '../contexts/GoogleTrafficSourceContext';
+import { usePrimaryDataSource } from '../contexts/PrimaryDataSourceContext';
 
 function GoogleCampaignForm() {
-  const { state, updateField, setValidationResult } = useGoogleTrafficSource();
+  const { state, updateField, setValidationResult } = usePrimaryDataSource();
   
   return (
     <form>
@@ -90,7 +90,7 @@ function GoogleCampaignForm() {
 The contexts work together to create a seamless wizard experience:
 
 1. `WizardContext` manages the step navigation
-2. `TrafficSourceFactory` provides the appropriate traffic source context
-3. Traffic source contexts manage the form data and validation
+2. `DataSourceFactory` provides the appropriate data source context
+3. Data source contexts manage the form data and validation
 
 This separation of concerns makes the code more maintainable and testable.

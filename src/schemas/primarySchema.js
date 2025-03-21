@@ -1,8 +1,8 @@
 import Joi from 'joi';
 import baseSchema from './baseSchema';
 
-// Google Ads validation schema builder
-const createGoogleSchema = () => Joi.object({
+// Primary data source validation schema builder
+const createPrimarySchema = () => Joi.object({
   ...baseSchema,
   dailyBudget: Joi.number().min(5).required().messages({
     'number.base': 'Daily budget must be a number',
@@ -16,10 +16,10 @@ const createGoogleSchema = () => Joi.object({
   keywords: Joi.string().required().messages({
     'string.empty': 'Keywords are required'
   }),
-  adGroups: Joi.array().min(1).items(
+  categoryGroups: Joi.array().min(1).items(
     Joi.object({
       name: Joi.string().required().messages({
-        'string.empty': 'Ad group name is required'
+        'string.empty': 'Category group name is required'
       }),
       cpc: Joi.number().min(0.01).required().messages({
         'number.base': 'Max CPC must be a number',
@@ -28,9 +28,9 @@ const createGoogleSchema = () => Joi.object({
       })
     })
   ).required().messages({
-    'array.min': 'At least one ad group is required',
-    'any.required': 'Ad groups are required'
+    'array.min': 'At least one category group is required',
+    'any.required': 'Category groups are required'
   })
 });
 
-export default createGoogleSchema;
+export default createPrimarySchema;

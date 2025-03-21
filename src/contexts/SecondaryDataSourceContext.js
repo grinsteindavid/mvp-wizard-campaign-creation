@@ -1,29 +1,30 @@
 import { createContext } from 'react';
-import { createTrafficSourceProvider, createUseTrafficSource, baseActions } from './BaseTrafficSourceContext';
+import { createDataSourceProvider, createUseDataSource, baseActions } from './BaseDataSourceContext';
 
 // Create the context
-const RevContentTrafficSourceContext = createContext();
+const SecondaryDataSourceContext = createContext();
 
-// Initial state specific to RevContent
+// Initial state specific to Secondary Data Source
 const initialState = {
+  projectName: '',
   targetUrl: '',
   bidAmount: '',
-  dailyBudget: '',
+  resourceAllocation: '',
   targeting: {
     countries: [],
     devices: []
   }
 };
 
-// RevContent-specific reducer actions
-const revContentActions = {
+// Secondary-specific reducer actions
+const secondaryActions = {
   UPDATE_TARGETING: 'UPDATE_TARGETING'
 };
 
-// RevContent-specific reducer
-const revContentReducer = (state, action) => {
+// Secondary-specific reducer
+const secondaryReducer = (state, action) => {
   switch (action.type) {
-    case revContentActions.UPDATE_TARGETING:
+    case secondaryActions.UPDATE_TARGETING:
       return {
         ...state,
         targeting: {
@@ -37,10 +38,10 @@ const revContentReducer = (state, action) => {
   }
 };
 
-// Field definitions for RevContent
-const revContentFields = {
-  campaignName: {
-    label: 'Campaign Name',
+// Field definitions for Secondary Data Source
+const secondaryFields = {
+  projectName: {
+    label: 'Project Name',
     type: 'text',
     required: true,
     validation: { min: 3, max: 50 }
@@ -56,8 +57,8 @@ const revContentFields = {
     required: true,
     validation: { min: 0.01, step: 0.01 }
   },
-  dailyBudget: {
-    label: 'Daily Budget',
+  resourceAllocation: {
+    label: 'Resource Allocation',
     type: 'number',
     required: true,
     validation: { min: 5 }
@@ -91,18 +92,18 @@ const revContentFields = {
 };
 
 // Create the provider component
-export const RevContentTrafficSourceProvider = createTrafficSourceProvider(
-  RevContentTrafficSourceContext,
+export const SecondaryDataSourceProvider = createDataSourceProvider(
+  SecondaryDataSourceContext,
   initialState,
-  revContentReducer,
-  revContentFields
+  secondaryReducer,
+  secondaryFields
 );
 
 // Create the custom hook
-export const useRevContentTrafficSource = createUseTrafficSource(RevContentTrafficSourceContext, 'RevContent');
+export const useSecondaryDataSource = createUseDataSource(SecondaryDataSourceContext, 'Secondary');
 
 // Export actions for use in components
-export const revContentTrafficSourceActions = {
+export const secondaryDataSourceActions = {
   ...baseActions,
-  ...revContentActions
+  ...secondaryActions
 };

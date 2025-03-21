@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('renders Ad Campaign Creator title', () => {
+test('renders Project Creator title', () => {
   render(<App />);
-  const titleElement = screen.getByText(/Ad Campaign Creator/i);
+  const titleElement = screen.getByText(/Project Creator/i);
   expect(titleElement).toBeInTheDocument();
 });

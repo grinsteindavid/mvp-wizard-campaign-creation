@@ -4,7 +4,7 @@ jest.mock('../utils/validationUtils');
 jest.mock('../schemas');
 
 // Import modules
-import { validateCampaign, validateField } from './validationService';
+import { validateProject, validateField } from './validationService';
 import { formatValidationErrors, extractNestedSchema } from '../utils/validationUtils';
 import { schemaCreators } from '../schemas';
 
@@ -23,7 +23,7 @@ describe('validationService', () => {
     // Setup validation utils mocks
     formatValidationErrors.mockImplementation((error) => {
       if (!error) return {};
-      return { campaignName: 'Campaign name is required' };
+      return { projectName: 'Project name is required' };
     });
     
     extractNestedSchema.mockReturnValue(null);
@@ -34,13 +34,13 @@ describe('validationService', () => {
     schemaCreators.yahoo = jest.fn().mockReturnValue(mockSchema);
   });
   
-  describe('validateCampaign', () => {
+  describe('validateProject', () => {
     test('should return isValid true when validation passes', () => {
       // Setup
       mockSchema.validate.mockReturnValue({ error: null });
       
       // Execute
-      const result = validateCampaign('google', { campaignName: 'Test Campaign' });
+      const result = validateProject('google', { projectName: 'Test Project' });
       
       // Verify
       expect(result).toEqual({
@@ -51,27 +51,27 @@ describe('validationService', () => {
     
     test('should return isValid false with errors when validation fails', () => {
       // Setup
-      const mockError = { details: [{ path: ['campaignName'], message: 'Campaign name is required' }] };
+      const mockError = { details: [{ path: ['projectName'], message: 'Project name is required' }] };
       mockSchema.validate.mockReturnValue({ error: mockError });
       
       // Execute
-      const result = validateCampaign('google', {});
+      const result = validateProject('google', {});
       
       // Verify
       expect(result).toEqual({
         isValid: false,
-        errors: { campaignName: 'Campaign name is required' }
+        errors: { projectName: 'Project name is required' }
       });
     });
     
-    test('should return isValid false when traffic source is invalid', () => {
+    test('should return isValid false when data source is invalid', () => {
       // Execute
-      const result = validateCampaign('invalid', {});
+      const result = validateProject('invalid', {});
       
       // Verify
       expect(result).toEqual({
         isValid: false,
-        errors: { general: 'Invalid traffic source' }
+        errors: { general: 'Invalid data source' }
       });
     });
   });
@@ -83,7 +83,7 @@ describe('validationService', () => {
       mockSchema.extract.mockReturnValue(mockFieldSchema);
       
       // Execute
-      const result = validateField('google', 'campaignName', 'Test Campaign');
+      const result = validateField('google', 'projectName', 'Test Project');
       
       // Verify
       expect(result).toEqual({
@@ -96,29 +96,29 @@ describe('validationService', () => {
       // Setup
       const mockFieldSchema = { 
         validate: jest.fn().mockReturnValue({ 
-          error: { message: 'Campaign name is required' } 
+          error: { message: 'Project name is required' } 
         }) 
       };
       mockSchema.extract.mockReturnValue(mockFieldSchema);
       
       // Execute
-      const result = validateField('google', 'campaignName', '');
+      const result = validateField('google', 'projectName', '');
       
       // Verify
       expect(result).toEqual({
         isValid: false,
-        error: 'Campaign name is required'
+        error: 'Project name is required'
       });
     });
     
-    test('should return isValid false when traffic source is invalid', () => {
+    test('should return isValid false when data source is invalid', () => {
       // Execute
-      const result = validateField('invalid', 'campaignName', 'Test Campaign');
+      const result = validateField('invalid', 'projectName', 'Test Project');
       
       // Verify
       expect(result).toEqual({
         isValid: false,
-        error: 'Invalid traffic source'
+        error: 'Invalid data source'
       });
     });
   });

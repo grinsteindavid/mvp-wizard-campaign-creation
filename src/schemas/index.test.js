@@ -1,5 +1,8 @@
 import {
   baseSchema,
+  createPrimarySchema,
+  createSecondarySchema,
+  createTertiarySchema,
   createGoogleSchema,
   createRevContentSchema,
   createYahooSchema,
@@ -9,41 +12,47 @@ import {
 describe('schemas index', () => {
   test('should export baseSchema', () => {
     expect(baseSchema).toBeDefined();
-    expect(baseSchema.campaignName).toBeDefined();
+    expect(baseSchema.projectName).toBeDefined();
   });
 
-  test('should export createGoogleSchema function', () => {
-    expect(typeof createGoogleSchema).toBe('function');
-    const schema = createGoogleSchema();
+  test('should export createPrimarySchema function', () => {
+    expect(typeof createPrimarySchema).toBe('function');
+    const schema = createPrimarySchema();
     expect(schema.describe().type).toBe('object');
   });
 
-  test('should export createRevContentSchema function', () => {
-    expect(typeof createRevContentSchema).toBe('function');
-    const schema = createRevContentSchema();
+  test('should export createSecondarySchema function', () => {
+    expect(typeof createSecondarySchema).toBe('function');
+    const schema = createSecondarySchema();
     expect(schema.describe().type).toBe('object');
   });
 
-  test('should export createYahooSchema function', () => {
-    expect(typeof createYahooSchema).toBe('function');
-    const schema = createYahooSchema();
+  test('should export createTertiarySchema function', () => {
+    expect(typeof createTertiarySchema).toBe('function');
+    const schema = createTertiarySchema();
     expect(schema.describe().type).toBe('object');
   });
 
-  test('should export schemaCreators object with all traffic sources', () => {
+  test('should export backward compatibility functions', () => {
+    expect(createGoogleSchema).toBe(createPrimarySchema);
+    expect(createRevContentSchema).toBe(createSecondarySchema);
+    expect(createYahooSchema).toBe(createTertiarySchema);
+  });
+
+  test('should export schemaCreators object with all data sources', () => {
     expect(schemaCreators).toBeDefined();
-    expect(schemaCreators.google).toBe(createGoogleSchema);
-    expect(schemaCreators.revcontent).toBe(createRevContentSchema);
-    expect(schemaCreators.yahoo).toBe(createYahooSchema);
+    expect(schemaCreators.primary).toBe(createPrimarySchema);
+    expect(schemaCreators.secondary).toBe(createSecondarySchema);
+    expect(schemaCreators.tertiary).toBe(createTertiarySchema);
   });
 
-  test('should create valid schemas for each traffic source', () => {
-    const trafficSources = Object.keys(schemaCreators);
-    expect(trafficSources).toContain('google');
-    expect(trafficSources).toContain('revcontent');
-    expect(trafficSources).toContain('yahoo');
+  test('should create valid schemas for each data source', () => {
+    const dataSources = Object.keys(schemaCreators);
+    expect(dataSources).toContain('primary');
+    expect(dataSources).toContain('secondary');
+    expect(dataSources).toContain('tertiary');
 
-    trafficSources.forEach(source => {
+    dataSources.forEach(source => {
       const createSchema = schemaCreators[source];
       expect(typeof createSchema).toBe('function');
       
