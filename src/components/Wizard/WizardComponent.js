@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useMemo, memo } from 'react';
+import React, { useEffect, useMemo, memo } from 'react';
 import { useWizard } from '../../contexts/WizardContext';
 import { DataSourceFactory } from '../../contexts/DataSourceFactory';
 import { WIZARD_STEPS } from './constants';
@@ -44,53 +44,25 @@ const Wizard = () => {
   }, [isDataSourceSelected, currentStep, setStep]);
 
   /**
-   * Render a step with the appropriate data source context provider
-   * @param {Component} Component - Step component to render
-   * @returns {JSX.Element} - Rendered component
-   */
-  const renderWithSelectedProvider = useCallback((Component) => {
-    // ALWAYS require a data source for steps after source selection
-    if (!isDataSourceSelected) {
-      console.log('No data source selected, redirecting to step 0');
-      
-      return (
-        <div style={{ padding: '20px', textAlign: 'center' }}>
-          <h2>Data Source Required</h2>
-          <p>Please choose a data source before proceeding.</p>
-          <p>Redirecting to source selection...</p>
-        </div>
-      );
-    }
-    
-    // Use the DataSourceFactory to get the appropriate context
-    // and pass it to the component as a prop
-    console.log('Rendering with data source:', dataSource);
-    return (
-      <DataSourceFactory source={dataSource}>
-        {(contextValue) => <Component dataSourceContext={contextValue} />}
-      </DataSourceFactory>
-    );
-  }, [isDataSourceSelected, dataSource]);
-  
-  /**
-   * Determine which step to render based on the current step state
+   * Render the step content based on the current step
+   * @param {Object} contextValue - The data source context value (if available)
    * @returns {JSX.Element} - The step component to render
    */
-  const renderStepContent = useCallback(() => {
+  const renderStepContent = (contextValue) => {
     switch (currentStep) {
       case 0:
         // The source selection step doesn't need a data source context
         return <SourceSelectionStep />;
       case 1:
         // Project setup requires data source context
-        return renderWithSelectedProvider(ProjectSetupStep);
+        return <ProjectSetupStep dataSourceContext={contextValue} />;
       case 2:
         // Review step requires data source context
-        return renderWithSelectedProvider(ReviewStep);
+        return <ReviewStep dataSourceContext={contextValue} />;
       default:
         return <div>Unknown step</div>;
     }
-  }, [currentStep, renderWithSelectedProvider]);
+  };
 
   // Memoize the step indicator to prevent unnecessary re-renders
   const stepIndicator = useMemo(() => (
@@ -120,6 +92,15 @@ const Wizard = () => {
     </StepIndicator>
   ), [currentStep]);
 
+  // Message to show when data source is required but not selected
+  const dataSourceRequiredMessage = (
+    <div style={{ padding: '20px', textAlign: 'center' }}>
+      <h2>Data Source Required</h2>
+      <p>Please choose a data source before proceeding.</p>
+      <p>Redirecting to source selection...</p>
+    </div>
+  );
+
   return (
     <WizardContainer>
       <WizardHeader>
@@ -128,7 +109,21 @@ const Wizard = () => {
       </WizardHeader>
       
       <WizardContent>
-        {renderStepContent()}
+        {currentStep === 0 ? (
+          // Source selection step doesn't need data source context
+          <SourceSelectionStep />
+        ) : (
+          // All other steps require data source context
+          isDataSourceSelected ? (
+            // Data source is selected, use DataSourceFactory once
+            <DataSourceFactory source={dataSource}>
+              {(contextValue) => renderStepContent(contextValue)}
+            </DataSourceFactory>
+          ) : (
+            // Data source is required but not selected
+            dataSourceRequiredMessage
+          )
+        )}
       </WizardContent>
     </WizardContainer>
   );
