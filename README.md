@@ -1,6 +1,6 @@
 # Workflow Wizard
 
-https://grinsteindavid.github.io/mvp-wizard-campaign-creation/
+https://grinsteindavid.github.io/mvp-wizard
 
 
 
