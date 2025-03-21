@@ -2,7 +2,7 @@
   "name": "mvp-wizard",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://grinsteindavid.github.io/mvp-wizard-campaign-creation",
+  "homepage": "https://grinsteindavid.github.io/mvp-wizard",
   "dependencies": {
     "formik": "^2.4.6",
     "joi": "^17.13.3",
