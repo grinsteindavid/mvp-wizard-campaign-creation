@@ -1,5 +1,8 @@
 import React from 'react';
-import { FieldContainer, Label, Select, ErrorMessage, HelpText } from '../styled/FormElements';
+import { Select } from '../styled/FormElements';
+import withFieldMemoization from './withFieldMemoization';
+import useFieldChangeHandler from '../hooks/useFieldChangeHandler';
+import BaseField from './BaseField';
 
 const SelectField = ({ 
   field, 
@@ -8,13 +11,10 @@ const SelectField = ({
   error, 
   disabled = false 
 }) => {
-  const handleChange = (e) => {
-    onChange(field.name, e.target.value);
-  };
+  const handleChange = useFieldChangeHandler(field.name, onChange);
 
   return (
-    <FieldContainer>
-      <Label htmlFor={field.name}>{field.label}</Label>
+    <BaseField field={field} error={error}>
       <Select
         id={field.name}
         name={field.name}
@@ -30,10 +30,9 @@ const SelectField = ({
           </option>
         ))}
       </Select>
-      {error && <ErrorMessage>{error}</ErrorMessage>}
-      {field.helpText && <HelpText>{field.helpText}</HelpText>}
-    </FieldContainer>
+    </BaseField>
   );
 };
 
-export default SelectField;
+// Apply the memoization HOC to the component
+export default withFieldMemoization(SelectField);

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback, useMemo, memo } from 'react';
 import { useWizard } from '../../contexts/WizardContext';
 import { TrafficSourceFactory } from '../../contexts/TrafficSourceFactory';
 import { WIZARD_STEPS } from './constants';
@@ -48,7 +48,7 @@ const Wizard = () => {
    * @param {Component} Component - Step component to render
    * @returns {JSX.Element} - Rendered component
    */
-  const renderWithSelectedProvider = (Component) => {
+  const renderWithSelectedProvider = useCallback((Component) => {
     // ALWAYS require a traffic source for steps after source selection
     if (!isTrafficSourceSelected) {
       console.log('No traffic source selected, redirecting to step 0');
@@ -70,13 +70,13 @@ const Wizard = () => {
         {(contextValue) => <Component trafficSourceContext={contextValue} />}
       </TrafficSourceFactory>
     );
-  };
+  }, [isTrafficSourceSelected, trafficSource]);
   
   /**
    * Determine which step to render based on the current step state
    * @returns {JSX.Element} - The step component to render
    */
-  const renderStepContent = () => {
+  const renderStepContent = useCallback(() => {
     switch (currentStep) {
       case 0:
         // The source selection step doesn't need a traffic source context
@@ -90,37 +90,41 @@ const Wizard = () => {
       default:
         return <div>Unknown step</div>;
     }
-  };
+  }, [currentStep, renderWithSelectedProvider]);
+
+  // Memoize the step indicator to prevent unnecessary re-renders
+  const stepIndicator = useMemo(() => (
+    <StepIndicator>
+      {WIZARD_STEPS.map((step, index) => (
+        <React.Fragment key={step.id}>
+          {index > 0 && (
+            <StepConnector completed={currentStep > index} />
+          )}
+          
+          <StepItem>
+            <StepNumber 
+              active={currentStep === step.id}
+              completed={currentStep > step.id}
+            >
+              {currentStep > step.id ? '✓' : step.id + 1}
+            </StepNumber>
+            <StepLabel 
+              active={currentStep === step.id}
+              completed={currentStep > step.id}
+            >
+              {step.label}
+            </StepLabel>
+          </StepItem>
+        </React.Fragment>
+      ))}
+    </StepIndicator>
+  ), [currentStep]);
 
   return (
     <WizardContainer>
       <WizardHeader>
         <WizardTitle>Ad Campaign Wizard</WizardTitle>
-        
-        <StepIndicator>
-          {WIZARD_STEPS.map((step, index) => (
-            <React.Fragment key={step.id}>
-              {index > 0 && (
-                <StepConnector completed={currentStep > index} />
-              )}
-              
-              <StepItem>
-                <StepNumber 
-                  active={currentStep === step.id}
-                  completed={currentStep > step.id}
-                >
-                  {currentStep > step.id ? '✓' : step.id + 1}
-                </StepNumber>
-                <StepLabel 
-                  active={currentStep === step.id}
-                  completed={currentStep > step.id}
-                >
-                  {step.label}
-                </StepLabel>
-              </StepItem>
-            </React.Fragment>
-          ))}
-        </StepIndicator>
+        {stepIndicator}
       </WizardHeader>
       
       <WizardContent>
@@ -130,4 +134,5 @@ const Wizard = () => {
   );
 };
 
-export default Wizard;
+// Memoize the entire Wizard component to prevent unnecessary re-renders
+export default memo(Wizard);

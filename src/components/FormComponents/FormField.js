@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { fieldTypeMap } from './fields';
 import { FieldContainer } from './styled/FormElements';
 
@@ -37,4 +37,13 @@ const FormField = ({
   );
 };
 
-export default FormField;
+// Memoize the component to prevent unnecessary re-renders
+export default memo(FormField, (prevProps, nextProps) => {
+  // Custom comparison function to determine if the component should re-render
+  return (
+    prevProps.value === nextProps.value &&
+    prevProps.error === nextProps.error &&
+    prevProps.disabled === nextProps.disabled &&
+    prevProps.field.type === nextProps.field.type
+  );
+});
