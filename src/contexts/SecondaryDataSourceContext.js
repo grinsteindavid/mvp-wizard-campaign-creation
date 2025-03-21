@@ -1,5 +1,6 @@
 import { createContext } from 'react';
 import { createDataSourceProvider, createUseDataSource, baseActions } from './BaseDataSourceContext';
+import { secondaryDataService } from '../services/http';
 
 // Create the context
 const SecondaryDataSourceContext = createContext();
@@ -96,7 +97,8 @@ export const SecondaryDataSourceProvider = createDataSourceProvider(
   SecondaryDataSourceContext,
   initialState,
   secondaryReducer,
-  secondaryFields
+  secondaryFields,
+  secondaryDataService
 );
 
 // Create the custom hook
