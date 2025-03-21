@@ -1,5 +1,24 @@
 # React Web App Best Practices
 
+
+## Complexity Management
+- Keep cyclomatic complexity under 10 for functions
+- Use early returns to avoid deep nesting
+- Limit function parameters to 3 or fewer
+- Break complex functions into smaller, focused ones
+- Avoid nested ternary operators
+- Limit nesting to 3 levels or less
+- Prefer composition over inheritance
+- Use destructuring for cleaner code
+- Implement pure functions where possible
+- Document complex algorithms with clear comments
+- Avoid premature optimization
+- Use named constants instead of magic numbers
+- Follow the DRY principle judiciously
+- Create abstraction layers for complex operations
+- Use meaningful variable and function names
+
+
 ## Component Structure
 - Follow Single Responsibility Principle: each component should do one thing well
 - Create small, reusable components with clear interfaces
