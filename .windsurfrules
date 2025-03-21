@@ -24,6 +24,8 @@
 - Follow Single Responsibility Principle: each component should do one thing well
 - Create small, reusable components with clear interfaces
 - Separate presentational and container components
+- Use presentational (dumb) components that only render UI based on props for better testability
+- Create container (smart) components that manage state and pass data to presentational components
 - Use React hooks for stateful logic
 - Keep component files under 300 lines of code
 
@@ -69,7 +71,7 @@
 - Implement proper code splitting by routes and features
 - Be mindful of potential memory overhead
 - Avoid console.log statements in production code
-- Use console.log statements for debugging and development
+- Use console.log statements for debugging and development environment only
 - Be conscious of performance implications when using timers
 - Timers can create race conditions and unexpected behavior
 
