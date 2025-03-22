@@ -134,11 +134,11 @@ export const SecondaryDataSourceProvider = ({ children }) => {
 
         
         // Load countries for targeting
-        const countries = await secondaryDataService.getCountries();
+        const {data: countries} = await secondaryDataService.getCountries();
         setCountries(countries);
         
         // Load devices for targeting
-        const devices = await secondaryDataService.getDevices();
+        const {data: devices} = await secondaryDataService.getDevices();
         setDevices(devices);
       } catch (error) {
         console.error('Error loading data from services:', error);
