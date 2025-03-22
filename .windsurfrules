@@ -103,13 +103,13 @@
 - Create mixins for common style patterns
 
 ## Testing
+- Test React.memo implementation, to check if it's preventing re-renders as it would in a real implementation.
 - Write unit tests for utility functions
 - Test components with React Testing Library
 - Focus on testing behavior, not implementation
 - Implement integration tests for critical user flows
 - Use mock service workers for API testing
 - Maintain high test coverage for critical paths
-- Use snapshot testing sparingly
 - Create test utilities for common testing patterns
 - Implement E2E tests with playwright for critical paths
 - SWC/JEST can have conflicts with spyOn
