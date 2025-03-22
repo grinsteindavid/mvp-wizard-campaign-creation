@@ -13,7 +13,10 @@ import { FieldContainer, Label, ErrorMessage, HelpText } from '../styled/FormEle
 const BaseField = ({ field, children, error }) => {
   return (
     <FieldContainer>
-      <Label htmlFor={field.name}>{field.label}</Label>
+      <Label htmlFor={field.name}>
+        {field.label}
+        {field.required && <span className="required-indicator"> *</span>}
+      </Label>
       {children}
       {error && <ErrorMessage>{error}</ErrorMessage>}
       {field.helpText && <HelpText>{field.helpText}</HelpText>}

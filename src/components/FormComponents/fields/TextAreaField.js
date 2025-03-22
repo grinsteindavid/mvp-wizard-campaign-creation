@@ -1,10 +1,13 @@
 import React from 'react';
-import { FieldContainer, Label, TextArea, ErrorMessage, HelpText } from '../styled/FormElements';
+import { TextArea } from '../styled/FormElements';
+import BaseField from './BaseField';
+import withFieldMemoization from './withFieldMemoization';
 
 const TextAreaField = ({ 
   field, 
   value, 
   onChange, 
+  onBlur,
   error, 
   disabled = false 
 }) => {
@@ -13,22 +16,21 @@ const TextAreaField = ({
   };
 
   return (
-    <FieldContainer>
-      <Label htmlFor={field.name}>{field.label}</Label>
+    <BaseField field={field} error={error}>
       <TextArea
         id={field.name}
         name={field.name}
         value={value || ''}
         onChange={handleChange}
+        onBlur={onBlur}
         placeholder={field.placeholder || ''}
         disabled={disabled}
         hasError={!!error}
         rows={field.rows || 4}
       />
-      {error && <ErrorMessage>{error}</ErrorMessage>}
-      {field.helpText && <HelpText>{field.helpText}</HelpText>}
-    </FieldContainer>
+    </BaseField>
   );
 };
 
-export default TextAreaField;
+// Apply the memoization HOC to the component
+export default withFieldMemoization(TextAreaField);

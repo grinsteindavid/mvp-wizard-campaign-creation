@@ -8,6 +8,7 @@ const TextField = ({
   field, 
   value, 
   onChange, 
+  onBlur,
   error, 
   disabled = false,
   debounceDelay = 500, // Default debounce delay
@@ -53,6 +54,7 @@ const TextField = ({
         name={field.name}
         value={inputValue}
         onChange={handleChange}
+        onBlur={onBlur}
         placeholder={field.placeholder || ''}
         min={field.validation?.min}
         max={field.validation?.max}

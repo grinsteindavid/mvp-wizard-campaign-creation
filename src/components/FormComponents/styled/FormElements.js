@@ -12,6 +12,11 @@ export const Label = styled.label`
   font-weight: 500;
   color: #333;
   font-size: 14px;
+  
+  .required-indicator {
+    color: #e53935;
+    font-weight: bold;
+  }
 `;
 
 export const Input = styled.input`

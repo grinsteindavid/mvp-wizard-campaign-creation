@@ -10,6 +10,7 @@ const FormField = ({
   field,
   value,
   onChange,
+  onBlur,
   error,
   disabled = false
 }) => {
@@ -31,6 +32,7 @@ const FormField = ({
       field={field}
       value={value}
       onChange={onChange}
+      onBlur={onBlur}
       error={error}
       disabled={disabled}
     />
@@ -44,6 +46,7 @@ export default memo(FormField, (prevProps, nextProps) => {
     prevProps.value === nextProps.value &&
     prevProps.error === nextProps.error &&
     prevProps.disabled === nextProps.disabled &&
-    prevProps.field.type === nextProps.field.type
+    prevProps.field.type === nextProps.field.type &&
+    prevProps.onBlur === nextProps.onBlur
   );
 });

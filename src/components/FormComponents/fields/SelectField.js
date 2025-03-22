@@ -8,6 +8,7 @@ const SelectField = ({
   field, 
   value, 
   onChange, 
+  onBlur,
   error, 
   disabled = false 
 }) => {
@@ -20,6 +21,7 @@ const SelectField = ({
         name={field.name}
         value={value || ''}
         onChange={handleChange}
+        onBlur={onBlur}
         disabled={disabled}
         hasError={!!error}
       >
