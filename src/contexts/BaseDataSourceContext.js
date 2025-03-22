@@ -1,4 +1,4 @@
-import { createContext, useContext } from 'react';
+import React, { createContext, useContext, useReducer } from 'react';
 
 // Base initial state for all data sources
 const baseInitialState = {
@@ -122,6 +122,22 @@ export const createUseDataSource = (SourceContext, sourceName) => {
 
 // Export the base actions for reuse
 export const baseActions = baseReducerActions;
+
+// For backward compatibility with tests
+export const createDataSourceProvider = (Context, initialState, reducer, fields) => {
+  const builders = createDataSourceBuilders(initialState, reducer, fields);
+  
+  return ({ children }) => {
+    const [state, dispatch] = useReducer(builders.combinedReducer, builders.combinedInitialState);
+    const contextValue = builders.createContextValue(state, dispatch);
+    
+    return (
+      <Context.Provider value={contextValue}>
+        {children}
+      </Context.Provider>
+    );
+  };
+};
 
 // Export the base context for potential direct use
 export default BaseDataSourceContext;
