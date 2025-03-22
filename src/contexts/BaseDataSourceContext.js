@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer } from 'react';
+import { createContext, useContext } from 'react';
 
 // Base initial state for all data sources
 const baseInitialState = {
@@ -52,63 +52,60 @@ const baseReducer = (state, action) => {
 // Create the base context
 const BaseDataSourceContext = createContext();
 
+// Base actions creator that all data sources will have
+export const createBaseActions = (dispatch) => ({
+  updateField: (field, value) => {
+    dispatch({ type: baseReducerActions.UPDATE_FIELD, field, value });
+  },
+  
+  setValidationResult: (result) => {
+    dispatch({ type: baseReducerActions.SET_VALIDATION_RESULT, payload: result });
+  },
+  
+  setSubmitting: (isSubmitting) => {
+    dispatch({ type: baseReducerActions.SET_SUBMITTING, payload: isSubmitting });
+  },
+  
+  setSubmitted: (isSubmitted) => {
+    dispatch({ type: baseReducerActions.SET_SUBMITTED, payload: isSubmitted });
+  },
+  
+  resetForm: () => {
+    dispatch({ type: baseReducerActions.RESET_FORM });
+  }
+});
+
+// Create a combined reducer that handles both source-specific and base actions
+export const createCombinedReducer = (sourceReducer) => (state, action) => {
+  const newState = sourceReducer ? sourceReducer(state, action) : state;
+  // If the source-specific reducer didn't handle the action (state unchanged),
+  // use the base reducer
+  return newState === state ? baseReducer(state, action) : newState;
+};
+
+// Create combined initial state
+export const createCombinedInitialState = (sourceInitialState) => ({
+  ...baseInitialState,
+  ...sourceInitialState
+});
+
 // Base provider component that can be extended
-export const createDataSourceProvider = (SourceContext, initialState, reducer, fields) => {
-  return ({ children }) => {
-    // Combine base initial state with source-specific state
-    const combinedInitialState = {
-      ...baseInitialState,
-      ...initialState
-    };
-    
-    // Create a combined reducer that first tries the source-specific reducer,
-    // then falls back to the base reducer
-    const combinedReducer = (state, action) => {
-      const newState = reducer ? reducer(state, action) : state;
-      // If the source-specific reducer didn't handle the action (state unchanged),
-      // use the base reducer
-      return newState === state ? baseReducer(state, action) : newState;
-    };
-    
-    const [state, dispatch] = useReducer(combinedReducer, combinedInitialState); 
-    
-    // Common actions that all data sources will have
-    const updateField = (field, value) => {
-      dispatch({ type: baseReducerActions.UPDATE_FIELD, field, value });
-    };
-    
-    const setValidationResult = (result) => {
-      dispatch({ type: baseReducerActions.SET_VALIDATION_RESULT, payload: result });
-    };
-    
-    const setSubmitting = (isSubmitting) => {
-      dispatch({ type: baseReducerActions.SET_SUBMITTING, payload: isSubmitting });
-    };
-    
-    const setSubmitted = (isSubmitted) => {
-      dispatch({ type: baseReducerActions.SET_SUBMITTED, payload: isSubmitted });
-    };
-    
-    const resetForm = () => {
-      dispatch({ type: baseReducerActions.RESET_FORM });
-    };
-    
-    // Create the context value with state, actions, field definitions, and API integration
-    const contextValue = {
+// Instead of creating the entire provider, this now returns the building blocks
+// that each context can use to create its own provider with custom useEffects
+export const createDataSourceBuilders = (initialState, reducer, fields) => {
+  const combinedInitialState = createCombinedInitialState(initialState);
+  const combinedReducer = createCombinedReducer(reducer);
+  
+  return {
+    combinedInitialState,
+    combinedReducer,
+    fields,
+    createContextValue: (state, dispatch) => ({
       state,
       fields,
-      updateField,
-      setValidationResult,
-      setSubmitting,
-      setSubmitted,
-      resetForm,
+      ...createBaseActions(dispatch),
       dispatch
-    };
-    return (
-      <SourceContext.Provider value={contextValue}>
-        {children}
-      </SourceContext.Provider>
-    );
+    })
   };
 };
 

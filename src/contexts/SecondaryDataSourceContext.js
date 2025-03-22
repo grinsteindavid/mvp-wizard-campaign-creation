@@ -1,6 +1,6 @@
-import { createContext } from 'react';
-import { createDataSourceProvider, createUseDataSource, baseActions } from './BaseDataSourceContext';
-import { secondaryDataService } from '../services/http';
+import { createContext, useReducer, useEffect } from 'react';
+import { createDataSourceBuilders, createUseDataSource, baseActions } from './BaseDataSourceContext';
+import secondaryDataService from '../services/http/secondaryDataService';
 
 // Create the context
 const SecondaryDataSourceContext = createContext();
@@ -14,12 +14,20 @@ const initialState = {
   targeting: {
     countries: [],
     devices: []
-  }
+  },
+  segments: [],
+  metrics: [],
+  availableCountries: [],
+  availableDevices: []
 };
 
 // Secondary-specific reducer actions
 const secondaryActions = {
-  UPDATE_TARGETING: 'UPDATE_TARGETING'
+  UPDATE_TARGETING: 'UPDATE_TARGETING',
+  SET_SEGMENTS: 'SET_SEGMENTS',
+  SET_METRICS: 'SET_METRICS',
+  SET_COUNTRIES: 'SET_COUNTRIES',
+  SET_DEVICES: 'SET_DEVICES'
 };
 
 // Secondary-specific reducer
@@ -32,6 +40,26 @@ const secondaryReducer = (state, action) => {
           ...state.targeting,
           [action.field]: action.value
         }
+      };
+    case secondaryActions.SET_SEGMENTS:
+      return {
+        ...state,
+        segments: action.payload
+      };
+    case secondaryActions.SET_METRICS:
+      return {
+        ...state,
+        metrics: action.payload
+      };
+    case secondaryActions.SET_COUNTRIES:
+      return {
+        ...state,
+        availableCountries: action.payload
+      };
+    case secondaryActions.SET_DEVICES:
+      return {
+        ...state,
+        availableDevices: action.payload
       };
     default:
       // Return the state unchanged to let the base reducer handle it
@@ -92,14 +120,77 @@ const secondaryFields = {
   }
 };
 
-// Create the provider component
-export const SecondaryDataSourceProvider = createDataSourceProvider(
-  SecondaryDataSourceContext,
-  initialState,
-  secondaryReducer,
-  secondaryFields,
-  secondaryDataService
-);
+// Get the building blocks from the base context
+const builders = createDataSourceBuilders(initialState, secondaryReducer, secondaryFields);
+
+// Create the provider component with custom side effects
+export const SecondaryDataSourceProvider = ({ children }) => {
+  const [state, dispatch] = useReducer(builders.combinedReducer, builders.combinedInitialState);
+  
+  // Secondary-specific actions
+  const updateTargeting = (field, value) => {
+    dispatch({ type: secondaryActions.UPDATE_TARGETING, field, value });
+  };
+  
+  const setSegments = (segments) => {
+    dispatch({ type: secondaryActions.SET_SEGMENTS, payload: segments });
+  };
+  
+  const setMetrics = (metrics) => {
+    dispatch({ type: secondaryActions.SET_METRICS, payload: metrics });
+  };
+  
+  const setCountries = (countries) => {
+    dispatch({ type: secondaryActions.SET_COUNTRIES, payload: countries });
+  };
+  
+  const setDevices = (devices) => {
+    dispatch({ type: secondaryActions.SET_DEVICES, payload: devices });
+  };
+  
+  // Custom side effect - Load data from services on mount
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        // Load segments
+        const segments = await secondaryDataService.getAllSegments();
+        setSegments(segments);
+        
+        // Load metrics
+        const metrics = await secondaryDataService.getAllMetrics();
+        setMetrics(metrics);
+        
+        // Load countries for targeting
+        const countries = await secondaryDataService.getCountries();
+        setCountries(countries);
+        
+        // Load devices for targeting
+        const devices = await secondaryDataService.getDevices();
+        setDevices(devices);
+      } catch (error) {
+        console.error('Error loading data from services:', error);
+      }
+    };
+    
+    loadData();
+  }, []);
+  
+  // Create the context value with base actions and secondary-specific actions
+  const contextValue = {
+    ...builders.createContextValue(state, dispatch),
+    updateTargeting,
+    setSegments,
+    setMetrics,
+    setCountries,
+    setDevices
+  };
+  
+  return (
+    <SecondaryDataSourceContext.Provider value={contextValue}>
+      {children}
+    </SecondaryDataSourceContext.Provider>
+  );
+};
 
 // Create the custom hook
 export const useSecondaryDataSource = createUseDataSource(SecondaryDataSourceContext, 'Secondary');
