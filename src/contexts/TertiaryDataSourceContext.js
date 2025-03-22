@@ -182,15 +182,15 @@ export const TertiaryDataSourceProvider = ({ children }) => {
 
         
         // Load objectives
-        const objectives = await tertiaryDataService.getObjectives();
+        const {data: objectives} = await tertiaryDataService.getObjectives();
         setObjectives(objectives);
         
         // Load budget types
-        const budgetTypes = await tertiaryDataService.getBudgetTypes();
+        const {data: budgetTypes} = await tertiaryDataService.getBudgetTypes();
         setBudgetTypes(budgetTypes);
         
         // Load bidding strategies
-        const strategies = await tertiaryDataService.getBiddingStrategies();
+        const {data: strategies} = await tertiaryDataService.getBiddingStrategies();
         setBiddingStrategies(strategies);
       } catch (error) {
         console.error('Error loading data from services:', error);

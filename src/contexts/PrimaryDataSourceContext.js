@@ -148,7 +148,7 @@ export const PrimaryDataSourceProvider = ({ children }) => {
 
         
         // Load bid strategies
-        const strategies = await primaryDataService.getOptimizationStrategies();
+        const {data: strategies} = await primaryDataService.getOptimizationStrategies();
         setBidStrategies(strategies);
       } catch (error) {
         console.error('Error loading data from services:', error);
