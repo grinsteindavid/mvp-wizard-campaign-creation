@@ -199,18 +199,6 @@ export const TertiaryDataSourceProvider = ({ children }) => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        // Load channels
-        const channels = await tertiaryDataService.getAllChannels();
-        setChannels(channels);
-        
-        // Load audiences
-        const audiences = await tertiaryDataService.getAllAudiences();
-        setAudiences(audiences);
-        
-        // Load project objectives
-        const objectives = await tertiaryDataService.getProjectObjectives();
-        setProjectObjectives(objectives);
-        
         // Load resource types
         const resourceTypes = await tertiaryDataService.getResourceTypes();
         setResourceTypes(resourceTypes);

@@ -8,21 +8,6 @@ class TertiaryDataService extends BaseDataService {
     super();
     // Mock data for tertiary datasource
     this.mockData = {
-      channels: [
-        { id: 1, name: 'Channel A', type: 'social', efficiency: 0.75 },
-        { id: 2, name: 'Channel B', type: 'display', efficiency: 0.82 },
-        { id: 3, name: 'Channel C', type: 'search', efficiency: 0.91 },
-      ],
-      audiences: [
-        { id: 1, name: 'Audience 1', size: 250000, cpm: 3.5 },
-        { id: 2, name: 'Audience 2', size: 500000, cpm: 2.8 },
-        { id: 3, name: 'Audience 3', size: 750000, cpm: 2.1 },
-      ],
-      projectObjectives: [
-        { value: 'visits', label: 'Website Visits', description: 'Drive traffic to website' },
-        { value: 'awareness', label: 'Brand Awareness', description: 'Increase brand recognition' },
-        { value: 'conversions', label: 'Conversions', description: 'Generate leads or sales' }
-      ],
       resourceTypes: [
         { value: 'daily', label: 'Daily', description: 'Budget spent evenly each day' },
         { value: 'lifetime', label: 'Lifetime', description: 'Budget spent over entire campaign duration' }
@@ -32,30 +17,6 @@ class TertiaryDataService extends BaseDataService {
         { value: 'auto', label: 'Automatic', description: 'System optimizes bids automatically' }
       ]
     };
-  }
-
-  /**
-   * Get all channels
-   * @returns {Promise} - Promise that resolves with the channels
-   */
-  getAllChannels() {
-    return this.httpService.get('/api/tertiary/channels', this.mockData.channels);
-  }
-
-  /**
-   * Get all audiences
-   * @returns {Promise} - Promise that resolves with the audiences
-   */
-  getAllAudiences() {
-    return this.httpService.get('/api/tertiary/audiences', this.mockData.audiences);
-  }
-
-  /**
-   * Get all project objectives
-   * @returns {Promise} - Promise that resolves with the project objectives
-   */
-  getProjectObjectives() {
-    return this.httpService.get('/api/tertiary/project-objectives', this.mockData.projectObjectives);
   }
 
   /**

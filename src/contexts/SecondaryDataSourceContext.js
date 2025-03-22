@@ -152,21 +152,9 @@ export const SecondaryDataSourceProvider = ({ children }) => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        // Load segments
-        const segments = await secondaryDataService.getAllSegments();
-        setSegments(segments);
-        
-        // Load metrics
-        const metrics = await secondaryDataService.getAllMetrics();
-        setMetrics(metrics);
-        
         // Load countries for targeting
         const countries = await secondaryDataService.getCountries();
         setCountries(countries);
-        
-        // Load devices for targeting
-        const devices = await secondaryDataService.getDevices();
-        setDevices(devices);
       } catch (error) {
         console.error('Error loading data from services:', error);
       }
