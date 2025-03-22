@@ -1,5 +1,4 @@
-import React, { createContext, useContext, useReducer, useEffect } from 'react';
-import { useApiRequest } from '../services/http';
+import React, { createContext, useContext, useReducer } from 'react';
 
 // Base initial state for all data sources
 const baseInitialState = {
@@ -54,13 +53,12 @@ const baseReducer = (state, action) => {
 const BaseDataSourceContext = createContext();
 
 // Base provider component that can be extended
-export const createDataSourceProvider = (SourceContext, initialState, reducer, fields, service = null) => {
+export const createDataSourceProvider = (SourceContext, initialState, reducer, fields) => {
   return ({ children }) => {
     // Combine base initial state with source-specific state
     const combinedInitialState = {
       ...baseInitialState,
-      ...initialState,
-      loading: false
+      ...initialState
     };
     
     // Create a combined reducer that first tries the source-specific reducer,
@@ -72,10 +70,7 @@ export const createDataSourceProvider = (SourceContext, initialState, reducer, f
       return newState === state ? baseReducer(state, action) : newState;
     };
     
-    const [state, dispatch] = useReducer(combinedReducer, combinedInitialState);
-    
-    // Setup API request hook if a service is provided
-    const api = useApiRequest(service);
+    const [state, dispatch] = useReducer(combinedReducer, combinedInitialState); 
     
     // Common actions that all data sources will have
     const updateField = (field, value) => {
@@ -98,45 +93,6 @@ export const createDataSourceProvider = (SourceContext, initialState, reducer, f
       dispatch({ type: baseReducerActions.RESET_FORM });
     };
     
-    // Validate data through the service
-    const validateData = async (data = state) => {
-      if (!service) return;
-      
-      try {
-        setSubmitting(true);
-        const result = await api.execute(service.validateConfiguration.bind(service), data);
-        setValidationResult(result);
-        return result;
-      } catch (error) {
-        setValidationResult({ isValid: false, errors: { general: 'Validation failed' } });
-        return { isValid: false, errors: { general: 'Validation failed' } };
-      } finally {
-        setSubmitting(false);
-      }
-    };
-    
-    // Submit data through the service
-    const submitData = async (data = state) => {
-      if (!service) return;
-      
-      try {
-        setSubmitting(true);
-        const validationResult = await validateData(data);
-        
-        if (!validationResult.isValid) {
-          return { success: false };
-        }
-        
-        const result = await api.execute(service.submitConfiguration.bind(service), data);
-        setSubmitted(true);
-        return result;
-      } catch (error) {
-        return { success: false, error: 'Submission failed' };
-      } finally {
-        setSubmitting(false);
-      }
-    };
-    
     // Create the context value with state, actions, field definitions, and API integration
     const contextValue = {
       state,
@@ -146,21 +102,8 @@ export const createDataSourceProvider = (SourceContext, initialState, reducer, f
       setSubmitting,
       setSubmitted,
       resetForm,
-      dispatch,
-      loading: state.isSubmitting || api.loading,
-      error: api.error,
-      validateData,
-      submitData,
-      service
+      dispatch
     };
-    
-    // Effect to clear API errors when form state changes
-    useEffect(() => {
-      if (api.error) {
-        api.clearError();
-      }
-    }, [state, api]);
-    
     return (
       <SourceContext.Provider value={contextValue}>
         {children}
