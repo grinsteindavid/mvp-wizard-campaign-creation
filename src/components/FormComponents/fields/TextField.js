@@ -1,18 +1,49 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Input } from '../styled/FormElements';
 import withFieldMemoization from './withFieldMemoization';
-import useFieldChangeHandler from '../hooks/useFieldChangeHandler';
 import BaseField from './BaseField';
+import useDebounce from '../hooks/useDebounce';
 
 const TextField = ({ 
   field, 
   value, 
   onChange, 
   error, 
-  disabled = false 
+  disabled = false,
+  debounceDelay = 500, // Default debounce delay
+  useDebouncing = false // Disable debouncing by default to maintain compatibility with existing tests
 }) => {
-  // Use the custom hook for the change handler
-  const handleChange = useFieldChangeHandler(field.name, onChange);
+  // Track the current input value for immediate display
+  const [inputValue, setInputValue] = useState(value || '');
+  
+  // Use the debounce hook for the debounced value
+  const [debouncedValue, setDebouncedValue, isDebouncing] = useDebounce(inputValue, debounceDelay);
+  
+  // Update local input value when value prop changes
+  useEffect(() => {
+    setInputValue(value || '');
+  }, [value]);
+  
+  // Handle input changes
+  const handleChange = (e) => {
+    const newValue = e.target.value;
+    setInputValue(newValue);
+    setDebouncedValue(newValue);
+    
+    // If debouncing is disabled, call onChange immediately
+    // This maintains compatibility with existing tests
+    if (!useDebouncing) {
+      onChange(field.name, newValue);
+    }
+  };
+  
+  // Effect to call the onChange prop when the debounced value changes
+  useEffect(() => {
+    // Only call onChange if debouncing is enabled and debouncedValue is different from the current value
+    if (useDebouncing && debouncedValue !== value && debouncedValue !== '') {
+      onChange(field.name, debouncedValue);
+    }
+  }, [debouncedValue, field.name, onChange, value, useDebouncing]);
 
   return (
     <BaseField field={field} error={error}>
@@ -20,7 +51,7 @@ const TextField = ({
         type={field.type || 'text'}
         id={field.name}
         name={field.name}
-        value={value || ''}
+        value={inputValue}
         onChange={handleChange}
         placeholder={field.placeholder || ''}
         min={field.validation?.min}
@@ -28,6 +59,7 @@ const TextField = ({
         step={field.validation?.step}
         disabled={disabled}
         hasError={!!error}
+        data-debouncing={isDebouncing}
       />
     </BaseField>
   );

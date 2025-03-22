@@ -7,12 +7,23 @@ import { useState, useEffect, useCallback } from 'react';
  * @returns {[any, Function, boolean]} - [debouncedValue, setValue, isDebouncing]
  */
 const useDebounce = (initialValue, delay = 500) => {
+  // Track the latest value that will be debounced
   const [value, setValue] = useState(initialValue);
+  
+  // Track the debounced value that will be returned
   const [debouncedValue, setDebouncedValue] = useState(initialValue);
+  
+  // Track whether we're currently in a debouncing state
   const [isDebouncing, setIsDebouncing] = useState(false);
 
+  // Update the internal value when initialValue changes from outside
   useEffect(() => {
-    // Set debouncing state to true when value changes
+    setValue(initialValue);
+  }, [initialValue]);
+
+  // Handle the debouncing logic
+  useEffect(() => {
+    // Only debounce if the value has changed
     if (value !== debouncedValue) {
       setIsDebouncing(true);
       
