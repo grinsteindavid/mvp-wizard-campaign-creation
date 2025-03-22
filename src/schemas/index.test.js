@@ -3,9 +3,6 @@ import {
   createPrimarySchema,
   createSecondarySchema,
   createTertiarySchema,
-  createGoogleSchema,
-  createRevContentSchema,
-  createYahooSchema,
   schemaCreators
 } from './index';
 
@@ -33,11 +30,7 @@ describe('schemas index', () => {
     expect(schema.describe().type).toBe('object');
   });
 
-  test('should export backward compatibility functions', () => {
-    expect(createGoogleSchema).toBe(createPrimarySchema);
-    expect(createRevContentSchema).toBe(createSecondarySchema);
-    expect(createYahooSchema).toBe(createTertiarySchema);
-  });
+
 
   test('should export schemaCreators object with all data sources', () => {
     expect(schemaCreators).toBeDefined();

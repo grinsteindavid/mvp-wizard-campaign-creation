@@ -5,80 +5,70 @@ import tertiaryDataService from '../services/http/tertiaryDataService';
 // Create the context
 const TertiaryDataSourceContext = createContext();
 
-// Initial state specific to Tertiary Data Source
+// Initial state specific to Tertiary Data Source - aligned with tertiarySchema
 const initialState = {
+  projectName: '',
   projectObjective: '',
   startDate: '',
   endDate: '',
-  resources: {
+  budget: {
     amount: '',
     type: ''
   },
-  optimization: {
+  bidding: {
     strategy: '',
     amount: ''
   },
-  channels: [],
-  audiences: [],
-  availableProjectObjectives: [],
-  availableResourceTypes: [],
-  availableOptimizationStrategies: []
+  // Available options for selection - not part of schema validation
+  availableObjectives: [],
+  availableBudgetTypes: [],
+  availableBiddingStrategies: []
 };
 
 // Tertiary-specific reducer actions
 const tertiaryActions = {
-  UPDATE_RESOURCES: 'UPDATE_RESOURCES',
-  UPDATE_OPTIMIZATION: 'UPDATE_OPTIMIZATION',
-  SET_CHANNELS: 'SET_CHANNELS',
-  SET_AUDIENCES: 'SET_AUDIENCES',
-  SET_PROJECT_OBJECTIVES: 'SET_PROJECT_OBJECTIVES',
-  SET_RESOURCE_TYPES: 'SET_RESOURCE_TYPES',
-  SET_OPTIMIZATION_STRATEGIES: 'SET_OPTIMIZATION_STRATEGIES'
+  UPDATE_BUDGET: 'UPDATE_BUDGET',
+  UPDATE_BIDDING: 'UPDATE_BIDDING',
+
+  SET_OBJECTIVES: 'SET_OBJECTIVES',
+  SET_BUDGET_TYPES: 'SET_BUDGET_TYPES',
+  SET_BIDDING_STRATEGIES: 'SET_BIDDING_STRATEGIES'
 };
 
 // Tertiary-specific reducer
 const tertiaryReducer = (state, action) => {
   switch (action.type) {
-    case tertiaryActions.UPDATE_RESOURCES:
+    case tertiaryActions.UPDATE_BUDGET:
       return {
         ...state,
-        resources: {
-          ...state.resources,
+        budget: {
+          ...state.budget,
           [action.field]: action.value
         }
       };
-    case tertiaryActions.UPDATE_OPTIMIZATION:
+    case tertiaryActions.UPDATE_BIDDING:
       return {
         ...state,
-        optimization: {
-          ...state.optimization,
+        bidding: {
+          ...state.bidding,
           [action.field]: action.value
         }
       };
-    case tertiaryActions.SET_CHANNELS:
+
+    case tertiaryActions.SET_OBJECTIVES:
       return {
         ...state,
-        channels: action.payload
+        availableObjectives: action.payload
       };
-    case tertiaryActions.SET_AUDIENCES:
+    case tertiaryActions.SET_BUDGET_TYPES:
       return {
         ...state,
-        audiences: action.payload
+        availableBudgetTypes: action.payload
       };
-    case tertiaryActions.SET_PROJECT_OBJECTIVES:
+    case tertiaryActions.SET_BIDDING_STRATEGIES:
       return {
         ...state,
-        availableProjectObjectives: action.payload
-      };
-    case tertiaryActions.SET_RESOURCE_TYPES:
-      return {
-        ...state,
-        availableResourceTypes: action.payload
-      };
-    case tertiaryActions.SET_OPTIMIZATION_STRATEGIES:
-      return {
-        ...state,
-        availableOptimizationStrategies: action.payload
+        availableBiddingStrategies: action.payload
       };
     default:
       // Return the state unchanged to let the base reducer handle it
@@ -86,10 +76,10 @@ const tertiaryReducer = (state, action) => {
   }
 };
 
-// Field definitions for Tertiary Data Source
+// Field definitions for Tertiary Data Source - aligned with tertiarySchema
 const tertiaryFields = {
-  projectTitle: {
-    label: 'Project Title',
+  projectName: {
+    label: 'Project Name',
     type: 'text',
     required: true,
     validation: { min: 3, max: 50 }
@@ -97,12 +87,7 @@ const tertiaryFields = {
   projectObjective: {
     label: 'Project Objective',
     type: 'select',
-    required: true,
-    options: [
-      { value: 'visits', label: 'Website Visits' },
-      { value: 'awareness', label: 'Brand Awareness' },
-      { value: 'conversions', label: 'Conversions' }
-    ]
+    required: true
   },
   startDate: {
     label: 'Start Date',
@@ -114,8 +99,8 @@ const tertiaryFields = {
     type: 'date',
     required: false
   },
-  resources: {
-    label: 'Resources',
+  budget: {
+    label: 'Budget',
     type: 'group',
     fields: {
       amount: {
@@ -125,33 +110,25 @@ const tertiaryFields = {
         validation: { min: 10 }
       },
       type: {
-        label: 'Resource Type',
+        label: 'Budget Type',
         type: 'select',
-        required: true,
-        options: [
-          { value: 'daily', label: 'Daily' },
-          { value: 'lifetime', label: 'Lifetime' }
-        ]
+        required: true
       }
     }
   },
-  optimization: {
-    label: 'Optimization',
+  bidding: {
+    label: 'Bidding',
     type: 'group',
     fields: {
       strategy: {
-        label: 'Optimization Strategy',
+        label: 'Bidding Strategy',
         type: 'select',
-        required: true,
-        options: [
-          { value: 'manual', label: 'Manual' },
-          { value: 'auto', label: 'Automatic' }
-        ]
+        required: true
       },
       amount: {
-        label: 'Target Value',
+        label: 'Bid Amount',
         type: 'number',
-        required: true,
+        required: false,
         validation: { min: 0.01, step: 0.01 },
         dependsOn: { field: 'strategy', value: 'manual' }
       }
@@ -167,45 +144,45 @@ export const TertiaryDataSourceProvider = ({ children }) => {
   const [state, dispatch] = useReducer(builders.combinedReducer, builders.combinedInitialState);
   
   // Tertiary-specific actions
-  const updateResources = (field, value) => {
-    dispatch({ type: tertiaryActions.UPDATE_RESOURCES, field, value });
+  const updateBudget = (field, value) => {
+    dispatch({ type: tertiaryActions.UPDATE_BUDGET, field, value });
   };
   
-  const updateOptimization = (field, value) => {
-    dispatch({ type: tertiaryActions.UPDATE_OPTIMIZATION, field, value });
+  const updateBidding = (field, value) => {
+    dispatch({ type: tertiaryActions.UPDATE_BIDDING, field, value });
   };
   
-  const setChannels = (channels) => {
-    dispatch({ type: tertiaryActions.SET_CHANNELS, payload: channels });
+
+  
+  const setObjectives = (objectives) => {
+    dispatch({ type: tertiaryActions.SET_OBJECTIVES, payload: objectives });
   };
   
-  const setAudiences = (audiences) => {
-    dispatch({ type: tertiaryActions.SET_AUDIENCES, payload: audiences });
+  const setBudgetTypes = (types) => {
+    dispatch({ type: tertiaryActions.SET_BUDGET_TYPES, payload: types });
   };
   
-  const setProjectObjectives = (objectives) => {
-    dispatch({ type: tertiaryActions.SET_PROJECT_OBJECTIVES, payload: objectives });
-  };
-  
-  const setResourceTypes = (types) => {
-    dispatch({ type: tertiaryActions.SET_RESOURCE_TYPES, payload: types });
-  };
-  
-  const setOptimizationStrategies = (strategies) => {
-    dispatch({ type: tertiaryActions.SET_OPTIMIZATION_STRATEGIES, payload: strategies });
+  const setBiddingStrategies = (strategies) => {
+    dispatch({ type: tertiaryActions.SET_BIDDING_STRATEGIES, payload: strategies });
   };
   
   // Custom side effect - Load data from services on mount
   useEffect(() => {
     const loadData = async () => {
       try {
-        // Load resource types
-        const resourceTypes = await tertiaryDataService.getResourceTypes();
-        setResourceTypes(resourceTypes);
+
         
-        // Load optimization strategies
-        const strategies = await tertiaryDataService.getOptimizationStrategies();
-        setOptimizationStrategies(strategies);
+        // Load objectives
+        const objectives = await tertiaryDataService.getObjectives();
+        setObjectives(objectives);
+        
+        // Load budget types
+        const budgetTypes = await tertiaryDataService.getBudgetTypes();
+        setBudgetTypes(budgetTypes);
+        
+        // Load bidding strategies
+        const strategies = await tertiaryDataService.getBiddingStrategies();
+        setBiddingStrategies(strategies);
       } catch (error) {
         console.error('Error loading data from services:', error);
       }
@@ -217,13 +194,12 @@ export const TertiaryDataSourceProvider = ({ children }) => {
   // Create the context value with base actions and tertiary-specific actions
   const contextValue = {
     ...builders.createContextValue(state, dispatch),
-    updateResources,
-    updateOptimization,
-    setChannels,
-    setAudiences,
-    setProjectObjectives,
-    setResourceTypes,
-    setOptimizationStrategies
+    updateBudget,
+    updateBidding,
+
+    setObjectives,
+    setBudgetTypes,
+    setBiddingStrategies
   };
   
   return (

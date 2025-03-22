@@ -6,22 +6,22 @@ import BaseDataService from './baseDataService';
 class PrimaryDataService extends BaseDataService {
   constructor() {
     super();
-    // Mock data for primary datasource
+    // Mock data for primary datasource that matches primarySchema structure
     this.mockData = {
-      optimizationStrategies: [
-        { value: 'cpc', label: 'Performance Based', description: 'Optimize for cost per click' },
-        { value: 'cpm', label: 'Impression Based', description: 'Optimize for cost per thousand impressions' },
-        { value: 'cpv', label: 'Engagement Based', description: 'Optimize for cost per view' }
+      bidStrategies: [
+        { value: 'cpc', label: 'Performance Based (CPC)' },
+        { value: 'cpm', label: 'Impression Based (CPM)' },
+        { value: 'cpv', label: 'Engagement Based (CPV)' }
       ]
     };
   }
 
   /**
-   * Get all optimization strategies
-   * @returns {Promise} - Promise that resolves with the optimization strategies
+   * Get all bid strategies
+   * @returns {Promise} - Promise that resolves with the bid strategies
    */
   getOptimizationStrategies() {
-    return this.httpService.get('/api/primary/optimization-strategies', this.mockData.optimizationStrategies);
+    return this.httpService.get('/api/primary/bid-strategies', this.mockData.bidStrategies);
   }
 }
 

@@ -6,16 +6,24 @@ import BaseDataService from './baseDataService';
 class SecondaryDataService extends BaseDataService {
   constructor() {
     super();
-    // Mock data for secondary datasource
+    // Mock data for secondary datasource that matches secondarySchema structure
     this.mockData = {
       countries: [
-        { value: 'us', label: 'United States', population: '331 million' },
-        { value: 'ca', label: 'Canada', population: '38 million' },
-        { value: 'uk', label: 'United Kingdom', population: '67 million' },
-        { value: 'au', label: 'Australia', population: '25 million' }
+        { value: 'us', label: 'United States' },
+        { value: 'ca', label: 'Canada' },
+        { value: 'uk', label: 'United Kingdom' },
+        { value: 'au', label: 'Australia' },
+        { value: 'de', label: 'Germany' },
+        { value: 'fr', label: 'France' }
       ],
+      devices: [
+        { value: 'desktop', label: 'Desktop' },
+        { value: 'mobile', label: 'Mobile' },
+        { value: 'tablet', label: 'Tablet' }
+      ]
     };
   }
+
 
   /**
    * Get all countries for targeting
@@ -23,6 +31,14 @@ class SecondaryDataService extends BaseDataService {
    */
   getCountries() {
     return this.httpService.get('/api/secondary/countries', this.mockData.countries);
+  }
+
+  /**
+   * Get all devices for targeting
+   * @returns {Promise} - Promise that resolves with the devices
+   */
+  getDevices() {
+    return this.httpService.get('/api/secondary/devices', this.mockData.devices);
   }
 }
 

@@ -6,33 +6,47 @@ import BaseDataService from './baseDataService';
 class TertiaryDataService extends BaseDataService {
   constructor() {
     super();
-    // Mock data for tertiary datasource
+    // Mock data for tertiary datasource that matches tertiarySchema structure
     this.mockData = {
-      resourceTypes: [
-        { value: 'daily', label: 'Daily', description: 'Budget spent evenly each day' },
-        { value: 'lifetime', label: 'Lifetime', description: 'Budget spent over entire campaign duration' }
+      objectives: [
+        { value: 'visits', label: 'Website Visits' },
+        { value: 'awareness', label: 'Brand Awareness' },
+        { value: 'conversions', label: 'Conversions' }
       ],
-      optimizationStrategies: [
-        { value: 'manual', label: 'Manual', description: 'Manually set bid amounts' },
-        { value: 'auto', label: 'Automatic', description: 'System optimizes bids automatically' }
+      budgetTypes: [
+        { value: 'daily', label: 'Daily Budget' },
+        { value: 'lifetime', label: 'Lifetime Budget' }
+      ],
+      biddingStrategies: [
+        { value: 'manual', label: 'Manual Bidding' },
+        { value: 'auto', label: 'Automatic Bidding' }
       ]
     };
   }
 
+
   /**
-   * Get all resource types
-   * @returns {Promise} - Promise that resolves with the resource types
+   * Get all project objectives
+   * @returns {Promise} - Promise that resolves with the objectives
    */
-  getResourceTypes() {
-    return this.httpService.get('/api/tertiary/resource-types', this.mockData.resourceTypes);
+  getObjectives() {
+    return this.httpService.get('/api/tertiary/objectives', this.mockData.objectives);
   }
 
   /**
-   * Get all optimization strategies
-   * @returns {Promise} - Promise that resolves with the optimization strategies
+   * Get all budget types
+   * @returns {Promise} - Promise that resolves with the budget types
    */
-  getOptimizationStrategies() {
-    return this.httpService.get('/api/tertiary/optimization-strategies', this.mockData.optimizationStrategies);
+  getBudgetTypes() {
+    return this.httpService.get('/api/tertiary/budget-types', this.mockData.budgetTypes);
+  }
+
+  /**
+   * Get all bidding strategies
+   * @returns {Promise} - Promise that resolves with the bidding strategies
+   */
+  getBiddingStrategies() {
+    return this.httpService.get('/api/tertiary/bidding-strategies', this.mockData.biddingStrategies);
   }
 }
 

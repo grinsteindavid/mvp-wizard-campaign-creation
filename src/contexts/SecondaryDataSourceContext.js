@@ -5,18 +5,17 @@ import secondaryDataService from '../services/http/secondaryDataService';
 // Create the context
 const SecondaryDataSourceContext = createContext();
 
-// Initial state specific to Secondary Data Source
+// Initial state specific to Secondary Data Source - aligned with secondarySchema
 const initialState = {
   projectName: '',
   targetUrl: '',
   bidAmount: '',
-  resourceAllocation: '',
+  dailyBudget: '',
   targeting: {
     countries: [],
     devices: []
   },
-  segments: [],
-  metrics: [],
+  // Available options for selection - not part of schema validation
   availableCountries: [],
   availableDevices: []
 };
@@ -24,8 +23,7 @@ const initialState = {
 // Secondary-specific reducer actions
 const secondaryActions = {
   UPDATE_TARGETING: 'UPDATE_TARGETING',
-  SET_SEGMENTS: 'SET_SEGMENTS',
-  SET_METRICS: 'SET_METRICS',
+
   SET_COUNTRIES: 'SET_COUNTRIES',
   SET_DEVICES: 'SET_DEVICES'
 };
@@ -41,16 +39,7 @@ const secondaryReducer = (state, action) => {
           [action.field]: action.value
         }
       };
-    case secondaryActions.SET_SEGMENTS:
-      return {
-        ...state,
-        segments: action.payload
-      };
-    case secondaryActions.SET_METRICS:
-      return {
-        ...state,
-        metrics: action.payload
-      };
+
     case secondaryActions.SET_COUNTRIES:
       return {
         ...state,
@@ -67,7 +56,7 @@ const secondaryReducer = (state, action) => {
   }
 };
 
-// Field definitions for Secondary Data Source
+// Field definitions for Secondary Data Source - aligned with secondarySchema
 const secondaryFields = {
   projectName: {
     label: 'Project Name',
@@ -86,8 +75,8 @@ const secondaryFields = {
     required: true,
     validation: { min: 0.01, step: 0.01 }
   },
-  resourceAllocation: {
-    label: 'Resource Allocation',
+  dailyBudget: {
+    label: 'Daily Budget',
     type: 'number',
     required: true,
     validation: { min: 5 }
@@ -99,22 +88,13 @@ const secondaryFields = {
       countries: {
         label: 'Countries',
         type: 'multiselect',
-        required: true,
-        options: [
-          { value: 'us', label: 'United States' },
-          { value: 'ca', label: 'Canada' },
-          { value: 'uk', label: 'United Kingdom' },
-          { value: 'au', label: 'Australia' }
-        ]
+        required: true
       },
       devices: {
         label: 'Devices',
         type: 'checkboxes',
-        options: [
-          { value: 'desktop', label: 'Desktop' },
-          { value: 'mobile', label: 'Mobile' },
-          { value: 'tablet', label: 'Tablet' }
-        ]
+        required: true,
+        min: 1
       }
     }
   }
@@ -132,13 +112,7 @@ export const SecondaryDataSourceProvider = ({ children }) => {
     dispatch({ type: secondaryActions.UPDATE_TARGETING, field, value });
   };
   
-  const setSegments = (segments) => {
-    dispatch({ type: secondaryActions.SET_SEGMENTS, payload: segments });
-  };
-  
-  const setMetrics = (metrics) => {
-    dispatch({ type: secondaryActions.SET_METRICS, payload: metrics });
-  };
+
   
   const setCountries = (countries) => {
     dispatch({ type: secondaryActions.SET_COUNTRIES, payload: countries });
@@ -152,9 +126,15 @@ export const SecondaryDataSourceProvider = ({ children }) => {
   useEffect(() => {
     const loadData = async () => {
       try {
+
+        
         // Load countries for targeting
         const countries = await secondaryDataService.getCountries();
         setCountries(countries);
+        
+        // Load devices for targeting
+        const devices = await secondaryDataService.getDevices();
+        setDevices(devices);
       } catch (error) {
         console.error('Error loading data from services:', error);
       }
@@ -167,8 +147,7 @@ export const SecondaryDataSourceProvider = ({ children }) => {
   const contextValue = {
     ...builders.createContextValue(state, dispatch),
     updateTargeting,
-    setSegments,
-    setMetrics,
+
     setCountries,
     setDevices
   };

@@ -12,17 +12,17 @@ const TestComponent = () => {
 
   return (
     <div>
-      <div data-testid="project-title">{state.projectTitle}</div>
+      <div data-testid="project-title">{state.projectName}</div>
       <div data-testid="project-objective">{state.projectObjective}</div>
       <div data-testid="start-date">{state.startDate}</div>
       <div data-testid="end-date">{state.endDate}</div>
-      <div data-testid="resources-amount">{state.resources.amount}</div>
-      <div data-testid="resources-type">{state.resources.type}</div>
-      <div data-testid="optimization-strategy">{state.optimization.strategy}</div>
-      <div data-testid="optimization-amount">{state.optimization.amount}</div>
+      <div data-testid="budget-amount">{state.budget.amount}</div>
+      <div data-testid="budget-type">{state.budget.type}</div>
+      <div data-testid="bidding-strategy">{state.bidding.strategy}</div>
+      <div data-testid="bidding-amount">{state.bidding.amount}</div>
       <button 
         data-testid="update-project-title" 
-        onClick={() => updateField('projectTitle', 'Tertiary Test Project')}
+        onClick={() => updateField('projectName', 'Tertiary Test Project')}
       >
         Update Project Title
       </button>
@@ -33,34 +33,34 @@ const TestComponent = () => {
         Update Project Objective
       </button>
       <button 
-        data-testid="update-resources" 
+        data-testid="update-budget" 
         onClick={() => dispatch({ 
-          type: tertiaryDataSourceActions.UPDATE_RESOURCES, 
+          type: tertiaryDataSourceActions.UPDATE_BUDGET, 
           field: 'amount', 
           value: '500' 
         })}
       >
-        Update Resources Amount
+        Update Budget Amount
       </button>
       <button 
-        data-testid="update-resources-type" 
+        data-testid="update-budget-type" 
         onClick={() => dispatch({ 
-          type: tertiaryDataSourceActions.UPDATE_RESOURCES, 
+          type: tertiaryDataSourceActions.UPDATE_BUDGET, 
           field: 'type', 
           value: 'daily' 
         })}
       >
-        Update Resources Type
+        Update Budget Type
       </button>
       <button 
-        data-testid="update-optimization" 
+        data-testid="update-bidding" 
         onClick={() => dispatch({ 
-          type: tertiaryDataSourceActions.UPDATE_OPTIMIZATION, 
+          type: tertiaryDataSourceActions.UPDATE_BIDDING, 
           field: 'strategy', 
           value: 'manual' 
         })}
       >
-        Update Optimization Strategy
+        Update Bidding Strategy
       </button>
     </div>
   );
@@ -78,10 +78,10 @@ describe('TertiaryDataSourceContext', () => {
     expect(screen.getByTestId('project-objective').textContent).toBe('');
     expect(screen.getByTestId('start-date').textContent).toBe('');
     expect(screen.getByTestId('end-date').textContent).toBe('');
-    expect(screen.getByTestId('resources-amount').textContent).toBe('');
-    expect(screen.getByTestId('resources-type').textContent).toBe('');
-    expect(screen.getByTestId('optimization-strategy').textContent).toBe('');
-    expect(screen.getByTestId('optimization-amount').textContent).toBe('');
+    expect(screen.getByTestId('budget-amount').textContent).toBe('');
+    expect(screen.getByTestId('budget-type').textContent).toBe('');
+    expect(screen.getByTestId('bidding-strategy').textContent).toBe('');
+    expect(screen.getByTestId('bidding-amount').textContent).toBe('');
   });
 
   test('updateField updates a field value', () => {
@@ -104,33 +104,33 @@ describe('TertiaryDataSourceContext', () => {
     expect(screen.getByTestId('project-objective').textContent).toBe('awareness');
   });
 
-  test('UPDATE_RESOURCES and UPDATE_OPTIMIZATION actions update nested fields', () => {
+  test('UPDATE_BUDGET and UPDATE_BIDDING actions update nested fields', () => {
     render(
       <TertiaryDataSourceProvider>
         <TestComponent />
       </TertiaryDataSourceProvider>
     );
 
-    // Test resources amount update
+    // Test budget amount update
     act(() => {
-      screen.getByTestId('update-resources').click();
+      screen.getByTestId('update-budget').click();
     });
 
-    expect(screen.getByTestId('resources-amount').textContent).toBe('500');
+    expect(screen.getByTestId('budget-amount').textContent).toBe('500');
 
-    // Test resources type update
+    // Test budget type update
     act(() => {
-      screen.getByTestId('update-resources-type').click();
+      screen.getByTestId('update-budget-type').click();
     });
 
-    expect(screen.getByTestId('resources-type').textContent).toBe('daily');
+    expect(screen.getByTestId('budget-type').textContent).toBe('daily');
 
-    // Test optimization strategy update
+    // Test bidding strategy update
     act(() => {
-      screen.getByTestId('update-optimization').click();
+      screen.getByTestId('update-bidding').click();
     });
 
-    expect(screen.getByTestId('optimization-strategy').textContent).toBe('manual');
+    expect(screen.getByTestId('bidding-strategy').textContent).toBe('manual');
   });
 
   test('tertiaryDataSourceActions exports the correct action types', () => {
@@ -140,13 +140,11 @@ describe('TertiaryDataSourceContext', () => {
       SET_SUBMITTING: 'SET_SUBMITTING',
       SET_SUBMITTED: 'SET_SUBMITTED',
       RESET_FORM: 'RESET_FORM',
-      UPDATE_RESOURCES: 'UPDATE_RESOURCES',
-      UPDATE_OPTIMIZATION: 'UPDATE_OPTIMIZATION',
-      SET_CHANNELS: 'SET_CHANNELS',
-      SET_AUDIENCES: 'SET_AUDIENCES',
-      SET_PROJECT_OBJECTIVES: 'SET_PROJECT_OBJECTIVES',
-      SET_RESOURCE_TYPES: 'SET_RESOURCE_TYPES',
-      SET_OPTIMIZATION_STRATEGIES: 'SET_OPTIMIZATION_STRATEGIES'
+      UPDATE_BUDGET: 'UPDATE_BUDGET',
+      UPDATE_BIDDING: 'UPDATE_BIDDING',
+      SET_OBJECTIVES: 'SET_OBJECTIVES',
+      SET_BUDGET_TYPES: 'SET_BUDGET_TYPES',
+      SET_BIDDING_STRATEGIES: 'SET_BIDDING_STRATEGIES'
     });
   });
 

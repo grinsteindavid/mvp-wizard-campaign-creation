@@ -5,16 +5,15 @@ import { primaryDataService } from '../services/http';
 // Create the context
 const PrimaryDataSourceContext = createContext();
 
-// Initial state specific to Primary Integration
+// Initial state specific to Primary Integration - aligned with primarySchema
 const initialState = {
   projectName: '',
-  resourceAllocation: '',
-  optimizationStrategy: '',
-  keyTerms: '',
+  dailyBudget: '',
+  bidStrategy: '',
+  keywords: '',
   categoryGroups: [],
-  projects: [],
-  availableCategoryGroups: [],
-  availableOptimizationStrategies: []
+  // Available options for selection - not part of schema validation
+  availableBidStrategies: []
 };
 
 // Primary-specific reducer actions
@@ -22,9 +21,7 @@ const primaryActions = {
   ADD_CATEGORY_GROUP: 'ADD_CATEGORY_GROUP',
   REMOVE_CATEGORY_GROUP: 'REMOVE_CATEGORY_GROUP',
   UPDATE_CATEGORY_GROUP: 'UPDATE_CATEGORY_GROUP',
-  SET_PROJECTS: 'SET_PROJECTS',
-  SET_CATEGORY_GROUPS: 'SET_CATEGORY_GROUPS',
-  SET_OPTIMIZATION_STRATEGIES: 'SET_OPTIMIZATION_STRATEGIES'
+  SET_BID_STRATEGIES: 'SET_BID_STRATEGIES'
 };
 
 // Primary-specific reducer
@@ -33,7 +30,7 @@ const primaryReducer = (state, action) => {
     case primaryActions.ADD_CATEGORY_GROUP:
       return {
         ...state,
-        categoryGroups: [...state.categoryGroups, { name: '', value: '' }]
+        categoryGroups: [...state.categoryGroups, { name: '', cpc: '' }]
       };
     case primaryActions.REMOVE_CATEGORY_GROUP:
       return {
@@ -50,20 +47,11 @@ const primaryReducer = (state, action) => {
         ...state,
         categoryGroups: updatedCategoryGroups
       };
-    case primaryActions.SET_PROJECTS:
+
+    case primaryActions.SET_BID_STRATEGIES:
       return {
         ...state,
-        projects: action.payload
-      };
-    case primaryActions.SET_CATEGORY_GROUPS:
-      return {
-        ...state,
-        availableCategoryGroups: action.payload
-      };
-    case primaryActions.SET_OPTIMIZATION_STRATEGIES:
-      return {
-        ...state,
-        availableOptimizationStrategies: action.payload
+        availableBidStrategies: action.payload
       };
     default:
       // Return the state unchanged to let the base reducer handle it
@@ -71,7 +59,7 @@ const primaryReducer = (state, action) => {
   }
 };
 
-// Field definitions for Primary Integration
+// Field definitions for Primary Integration - aligned with primarySchema
 const primaryFields = {
   projectName: {
     label: 'Project Name',
@@ -79,27 +67,27 @@ const primaryFields = {
     required: true,
     validation: { min: 3, max: 50 }
   },
-  resourceAllocation: {
-    label: 'Resource Allocation',
+  dailyBudget: {
+    label: 'Daily Budget',
     type: 'number',
     required: true,
     validation: { min: 5 }
   },
-  optimizationStrategy: {
-    label: 'Optimization Strategy',
+  bidStrategy: {
+    label: 'Bid Strategy',
     type: 'select',
     required: true,
     options: [
-      { value: 'cpc', label: 'Performance Based' },
-      { value: 'cpm', label: 'Impression Based' },
-      { value: 'cpv', label: 'Engagement Based' }
+      { value: 'cpc', label: 'Performance Based (CPC)' },
+      { value: 'cpm', label: 'Impression Based (CPM)' },
+      { value: 'cpv', label: 'Engagement Based (CPV)' }
     ]
   },
-  keyTerms: {
-    label: 'Key Terms',
+  keywords: {
+    label: 'Keywords',
     type: 'textarea',
     required: true,
-    placeholder: 'Enter key terms separated by commas'
+    placeholder: 'Enter keywords separated by commas'
   },
   categoryGroups: {
     label: 'Category Groups',
@@ -111,10 +99,11 @@ const primaryFields = {
         type: 'text',
         required: true
       },
-      value: {
-        label: 'Max Value',
+      cpc: {
+        label: 'Max CPC',
         type: 'number',
-        required: true
+        required: true,
+        validation: { min: 0.01, step: 0.01 }
       }
     }
   }
@@ -140,33 +129,21 @@ export const PrimaryDataSourceProvider = ({ children }) => {
     dispatch({ type: primaryActions.UPDATE_CATEGORY_GROUP, index, field, value });
   };
   
-  const setProjects = (projects) => {
-    dispatch({ type: primaryActions.SET_PROJECTS, payload: projects });
-  };
+
   
-  const setCategoryGroups = (categoryGroups) => {
-    dispatch({ type: primaryActions.SET_CATEGORY_GROUPS, payload: categoryGroups });
-  };
-  
-  const setOptimizationStrategies = (strategies) => {
-    dispatch({ type: primaryActions.SET_OPTIMIZATION_STRATEGIES, payload: strategies });
+  const setBidStrategies = (strategies) => {
+    dispatch({ type: primaryActions.SET_BID_STRATEGIES, payload: strategies });
   };
   
   // Custom side effect - Load data from services on mount
   useEffect(() => {
     const loadData = async () => {
       try {
-        // Load projects
-        const projects = await primaryDataService.getAllProjects();
-        setProjects(projects);
+
         
-        // Load category groups
-        const categoryGroups = await primaryDataService.getAllCategoryGroups();
-        setCategoryGroups(categoryGroups);
-        
-        // Load optimization strategies
+        // Load bid strategies
         const strategies = await primaryDataService.getOptimizationStrategies();
-        setOptimizationStrategies(strategies);
+        setBidStrategies(strategies);
       } catch (error) {
         console.error('Error loading data from services:', error);
       }
@@ -181,9 +158,8 @@ export const PrimaryDataSourceProvider = ({ children }) => {
     addCategoryGroup,
     removeCategoryGroup,
     updateCategoryGroup,
-    setProjects,
-    setCategoryGroups,
-    setOptimizationStrategies
+
+    setBidStrategies
   };
   
   return (

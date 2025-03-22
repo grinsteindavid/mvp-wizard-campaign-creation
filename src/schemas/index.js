@@ -10,19 +10,12 @@ const schemaCreators = {
   tertiary: createTertiarySchema
 };
 
-// For backward compatibility
-const createGoogleSchema = createPrimarySchema;
-const createRevContentSchema = createSecondarySchema;
-const createYahooSchema = createTertiarySchema;
+
 
 export {
   baseSchema,
   createPrimarySchema,
   createSecondarySchema,
   createTertiarySchema,
-  // For backward compatibility
-  createGoogleSchema,
-  createRevContentSchema,
-  createYahooSchema,
   schemaCreators
 };
