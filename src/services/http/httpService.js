@@ -5,7 +5,7 @@
 class HttpService {
   constructor(baseUrl = '') {
     this.baseUrl = baseUrl;
-    this.mockDelay = 500; // Default delay for mock responses in milliseconds
+    this.mockDelay = 1500; // Default delay for mock responses in milliseconds
   }
 
   /**
