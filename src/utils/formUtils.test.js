@@ -1,4 +1,4 @@
-import { flattenErrors, prepareInitialValues, validateField } from './formUtils';
+import { flattenErrors, prepareInitialValues } from './formUtils';
 
 describe('formUtils', () => {
   describe('flattenErrors', () => {
@@ -189,68 +189,5 @@ describe('formUtils', () => {
     });
   });
   
-  describe('validateField', () => {
-    // Mock schema with extract method
-    const mockSchema = {
-      extract: jest.fn()
-    };
-    
-    beforeEach(() => {
-      mockSchema.extract.mockReset();
-    });
-    
-    test('returns null when schema is null or undefined', () => {
-      expect(validateField(null, 'name', 'John')).toBeNull();
-      expect(validateField(undefined, 'name', 'John')).toBeNull();
-    });
-    
-    test('returns null when field schema is not found', () => {
-      mockSchema.extract.mockReturnValue(null);
-      
-      expect(validateField(mockSchema, 'name', 'John')).toBeNull();
-      expect(mockSchema.extract).toHaveBeenCalledWith('name');
-    });
-    
-    test('returns null when validation passes', () => {
-      const fieldSchema = {
-        validate: jest.fn().mockReturnValue({ error: null })
-      };
-      
-      mockSchema.extract.mockReturnValue(fieldSchema);
-      
-      expect(validateField(mockSchema, 'name', 'John')).toBeNull();
-      expect(mockSchema.extract).toHaveBeenCalledWith('name');
-      expect(fieldSchema.validate).toHaveBeenCalledWith('John');
-    });
-    
-    test('returns error message when validation fails', () => {
-      const fieldSchema = {
-        validate: jest.fn().mockReturnValue({
-          error: { message: 'Name is required' }
-        })
-      };
-      
-      mockSchema.extract.mockReturnValue(fieldSchema);
-      
-      expect(validateField(mockSchema, 'name', '')).toBe('Name is required');
-      expect(mockSchema.extract).toHaveBeenCalledWith('name');
-      expect(fieldSchema.validate).toHaveBeenCalledWith('');
-    });
-    
-    test('returns null when validation throws an error', () => {
-      mockSchema.extract.mockImplementation(() => {
-        throw new Error('Validation error');
-      });
-      
-      // Mock console.error to avoid polluting test output
-      const originalConsoleError = console.error;
-      console.error = jest.fn();
-      
-      expect(validateField(mockSchema, 'name', 'John')).toBeNull();
-      expect(console.error).toHaveBeenCalled();
-      
-      // Restore console.error
-      console.error = originalConsoleError;
-    });
-  });
+  // validateField tests removed as this function has been moved to validationService
 });

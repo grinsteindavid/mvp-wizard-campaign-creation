@@ -1,6 +1,7 @@
 import { createContext, useReducer, useEffect } from 'react';
 import { createDataSourceBuilders, createUseDataSource, baseActions } from './BaseDataSourceContext';
 import tertiaryDataService from '../services/http/tertiaryDataService';
+import { validateField } from '../services/validationService';
 
 // Create the context
 const TertiaryDataSourceContext = createContext();
@@ -77,60 +78,68 @@ const tertiaryReducer = (state, action) => {
 };
 
 // Field definitions for Tertiary Data Source - aligned with tertiarySchema
+// Validation is connected directly to the schema
 const tertiaryFields = {
   projectName: {
     label: 'Project Name',
     type: 'text',
     required: true,
-    validation: { min: 3, max: 50 }
+    validateField: (value, formData) => validateField('tertiary', 'projectName', value, formData)
   },
   projectObjective: {
     label: 'Project Objective',
     type: 'select',
-    required: true
+    required: true,
+    validateField: (value, formData) => validateField('tertiary', 'projectObjective', value, formData)
   },
   startDate: {
     label: 'Start Date',
     type: 'date',
-    required: true
+    required: true,
+    validateField: (value, formData) => validateField('tertiary', 'startDate', value, formData)
   },
   endDate: {
     label: 'End Date',
     type: 'date',
-    required: false
+    required: false,
+    validateField: (value, formData) => validateField('tertiary', 'endDate', value, formData)
   },
   budget: {
     label: 'Budget',
     type: 'group',
+    validateField: (value, formData) => validateField('tertiary', 'budget', value, formData),
     fields: {
       amount: {
         label: 'Amount',
         type: 'number',
         required: true,
-        validation: { min: 10 }
+        validateField: (value, formData) => validateField('tertiary', 'budget.amount', value, formData)
       },
       type: {
         label: 'Budget Type',
         type: 'select',
-        required: true
+        required: true,
+        validateField: (value, formData) => validateField('tertiary', 'budget.type', value, formData)
       }
     }
   },
   bidding: {
     label: 'Bidding',
     type: 'group',
+    validateField: (value, formData) => validateField('tertiary', 'bidding', value, formData),
     fields: {
       strategy: {
         label: 'Bidding Strategy',
         type: 'select',
-        required: true
+        required: true,
+        validateField: (value, formData) => validateField('tertiary', 'bidding.strategy', value, formData)
       },
       amount: {
         label: 'Bid Amount',
         type: 'number',
         required: false,
-        validation: { min: 0.01, step: 0.01 },
-        dependsOn: { field: 'strategy', value: 'manual' }
+        dependsOn: { field: 'strategy', value: 'manual' },
+        validateField: (value, formData) => validateField('tertiary', 'bidding.amount', value, formData)
       }
     }
   }

@@ -1,6 +1,7 @@
 import React, { createContext, useReducer, useEffect } from 'react';
 import { createDataSourceBuilders, createUseDataSource, baseActions } from './BaseDataSourceContext';
 import { primaryDataService } from '../services/http';
+import { validateField } from '../services/validationService';
 
 // Create the context
 const PrimaryDataSourceContext = createContext();
@@ -60,18 +61,19 @@ const primaryReducer = (state, action) => {
 };
 
 // Field definitions for Primary Integration - aligned with primarySchema
+// Validation is connected directly to the schema
 const primaryFields = {
   projectName: {
     label: 'Project Name',
     type: 'text',
     required: true,
-    validation: { min: 3, max: 50 }
+    validateField: (value, formData) => validateField('primary', 'projectName', value, formData)
   },
   dailyBudget: {
     label: 'Daily Budget',
     type: 'number',
     required: true,
-    validation: { min: 5 }
+    validateField: (value, formData) => validateField('primary', 'dailyBudget', value, formData)
   },
   bidStrategy: {
     label: 'Bid Strategy',
@@ -81,29 +83,33 @@ const primaryFields = {
       { value: 'cpc', label: 'Performance Based (CPC)' },
       { value: 'cpm', label: 'Impression Based (CPM)' },
       { value: 'cpv', label: 'Engagement Based (CPV)' }
-    ]
+    ],
+    validateField: (value, formData) => validateField('primary', 'bidStrategy', value, formData)
   },
   keywords: {
     label: 'Keywords',
     type: 'textarea',
     required: true,
-    placeholder: 'Enter keywords separated by commas'
+    placeholder: 'Enter keywords separated by commas',
+    validateField: (value, formData) => validateField('primary', 'keywords', value, formData)
   },
   categoryGroups: {
     label: 'Category Groups',
     type: 'array',
     required: true,
+    validateField: (value, formData) => validateField('primary', 'categoryGroups', value, formData),
     fields: {
       name: {
         label: 'Group Name',
         type: 'text',
-        required: true
+        required: true,
+        validateField: (value, formData, index) => validateField('primary', `categoryGroups.${index}.name`, value, formData)
       },
       cpc: {
         label: 'Max CPC',
         type: 'number',
         required: true,
-        validation: { min: 0.01, step: 0.01 }
+        validateField: (value, formData, index) => validateField('primary', `categoryGroups.${index}.cpc`, value, formData)
       }
     }
   }

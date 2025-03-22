@@ -67,24 +67,4 @@ export const prepareInitialValues = (fields) => {
   return initialValues;
 };
 
-/**
- * Validates a form field against a validation schema
- * @param {Object} schema - The validation schema
- * @param {string} fieldName - The name of the field to validate
- * @param {any} value - The value to validate
- * @returns {string|null} - Error message or null if valid
- */
-export const validateField = (schema, fieldName, value) => {
-  if (!schema) return null;
-  
-  try {
-    const fieldSchema = schema.extract(fieldName);
-    if (!fieldSchema) return null;
-    
-    const { error } = fieldSchema.validate(value);
-    return error ? error.message : null;
-  } catch (error) {
-    console.error('Field validation error:', error);
-    return null;
-  }
-};
+

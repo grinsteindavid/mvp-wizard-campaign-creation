@@ -1,6 +1,7 @@
 import { createContext, useReducer, useEffect } from 'react';
 import { createDataSourceBuilders, createUseDataSource, baseActions } from './BaseDataSourceContext';
 import secondaryDataService from '../services/http/secondaryDataService';
+import { validateField } from '../services/validationService';
 
 // Create the context
 const SecondaryDataSourceContext = createContext();
@@ -57,44 +58,48 @@ const secondaryReducer = (state, action) => {
 };
 
 // Field definitions for Secondary Data Source - aligned with secondarySchema
+// Validation is connected directly to the schema
 const secondaryFields = {
   projectName: {
     label: 'Project Name',
     type: 'text',
     required: true,
-    validation: { min: 3, max: 50 }
+    validateField: (value, formData) => validateField('secondary', 'projectName', value, formData)
   },
   targetUrl: {
     label: 'Target URL',
     type: 'url',
-    required: true
+    required: true,
+    validateField: (value, formData) => validateField('secondary', 'targetUrl', value, formData)
   },
   bidAmount: {
     label: 'Bid Amount',
     type: 'number',
     required: true,
-    validation: { min: 0.01, step: 0.01 }
+    validateField: (value, formData) => validateField('secondary', 'bidAmount', value, formData)
   },
   dailyBudget: {
     label: 'Daily Budget',
     type: 'number',
     required: true,
-    validation: { min: 5 }
+    validateField: (value, formData) => validateField('secondary', 'dailyBudget', value, formData)
   },
   targeting: {
     label: 'Targeting',
     type: 'group',
+    validateField: (value, formData) => validateField('secondary', 'targeting', value, formData),
     fields: {
       countries: {
         label: 'Countries',
         type: 'multiselect',
-        required: true
+        required: true,
+        validateField: (value, formData) => validateField('secondary', 'targeting.countries', value, formData)
       },
       devices: {
         label: 'Devices',
         type: 'checkboxes',
         required: true,
-        min: 1
+        validateField: (value, formData) => validateField('secondary', 'targeting.devices', value, formData)
       }
     }
   }
