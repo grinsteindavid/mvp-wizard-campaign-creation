@@ -57,26 +57,6 @@ class BaseDataService {
   delete(id, mockData = null) {
     return this.httpService.delete(`/api/items/${id}`, mockData);
   }
-
-  /**
-   * Validate data
-   * @param {Object} data - Data to validate
-   * @param {Object} mockData - Optional mock data to return
-   * @returns {Promise} - Promise that resolves with the validation result
-   */
-  validate(data, mockData = null) {
-    return this.httpService.post('/api/validate', data, mockData);
-  }
-
-  /**
-   * Submit data
-   * @param {Object} data - Data to submit
-   * @param {Object} mockData - Optional mock data to return
-   * @returns {Promise} - Promise that resolves with the submission result
-   */
-  submit(data, mockData = null) {
-    return this.httpService.post('/api/submit', data, mockData);
-  }
 }
 
 export default BaseDataService;

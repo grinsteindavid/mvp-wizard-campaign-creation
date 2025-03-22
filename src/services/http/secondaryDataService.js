@@ -17,6 +17,17 @@ class SecondaryDataService extends BaseDataService {
         { id: 1, name: 'Conversion Rate', value: 2.5, target: 3.0 },
         { id: 2, name: 'Engagement Score', value: 7.8, target: 8.0 },
         { id: 3, name: 'Retention Index', value: 65, target: 70 },
+      ],
+      countries: [
+        { value: 'us', label: 'United States', population: '331 million' },
+        { value: 'ca', label: 'Canada', population: '38 million' },
+        { value: 'uk', label: 'United Kingdom', population: '67 million' },
+        { value: 'au', label: 'Australia', population: '25 million' }
+      ],
+      devices: [
+        { value: 'desktop', label: 'Desktop', marketShare: '42%' },
+        { value: 'mobile', label: 'Mobile', marketShare: '51%' },
+        { value: 'tablet', label: 'Tablet', marketShare: '7%' }
       ]
     };
   }
@@ -38,36 +49,19 @@ class SecondaryDataService extends BaseDataService {
   }
 
   /**
-   * Validate secondary data source configuration
-   * @param {Object} data - Configuration data
-   * @returns {Promise} - Promise that resolves with validation results
+   * Get all countries for targeting
+   * @returns {Promise} - Promise that resolves with the countries
    */
-  validateConfiguration(data) {
-    // Mock validation logic
-    const errors = {};
-    let isValid = true;
-    
-    // Implement secondary-specific validation here
-    // This would be replaced with actual validation logic
-    
-    const mockResponse = { isValid, errors };
-    return this.httpService.post('/api/secondary/validate', data, mockResponse);
+  getCountries() {
+    return this.httpService.get('/api/secondary/countries', this.mockData.countries);
   }
 
   /**
-   * Submit secondary data source configuration
-   * @param {Object} data - Configuration data
-   * @returns {Promise} - Promise that resolves with submission result
+   * Get all devices for targeting
+   * @returns {Promise} - Promise that resolves with the devices
    */
-  submitConfiguration(data) {
-    // Mock successful submission
-    const mockResponse = {
-      success: true,
-      id: Math.floor(Math.random() * 10000),
-      message: 'Secondary data source configuration submitted successfully'
-    };
-    
-    return this.httpService.post('/api/secondary/submit', data, mockResponse);
+  getDevices() {
+    return this.httpService.get('/api/secondary/devices', this.mockData.devices);
   }
 }
 

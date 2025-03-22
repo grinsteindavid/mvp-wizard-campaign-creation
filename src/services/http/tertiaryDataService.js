@@ -17,6 +17,19 @@ class TertiaryDataService extends BaseDataService {
         { id: 1, name: 'Audience 1', size: 250000, cpm: 3.5 },
         { id: 2, name: 'Audience 2', size: 500000, cpm: 2.8 },
         { id: 3, name: 'Audience 3', size: 750000, cpm: 2.1 },
+      ],
+      projectObjectives: [
+        { value: 'visits', label: 'Website Visits', description: 'Drive traffic to website' },
+        { value: 'awareness', label: 'Brand Awareness', description: 'Increase brand recognition' },
+        { value: 'conversions', label: 'Conversions', description: 'Generate leads or sales' }
+      ],
+      resourceTypes: [
+        { value: 'daily', label: 'Daily', description: 'Budget spent evenly each day' },
+        { value: 'lifetime', label: 'Lifetime', description: 'Budget spent over entire campaign duration' }
+      ],
+      optimizationStrategies: [
+        { value: 'manual', label: 'Manual', description: 'Manually set bid amounts' },
+        { value: 'auto', label: 'Automatic', description: 'System optimizes bids automatically' }
       ]
     };
   }
@@ -38,36 +51,27 @@ class TertiaryDataService extends BaseDataService {
   }
 
   /**
-   * Validate tertiary data source configuration
-   * @param {Object} data - Configuration data
-   * @returns {Promise} - Promise that resolves with validation results
+   * Get all project objectives
+   * @returns {Promise} - Promise that resolves with the project objectives
    */
-  validateConfiguration(data) {
-    // Mock validation logic
-    const errors = {};
-    let isValid = true;
-    
-    // Implement tertiary-specific validation here
-    // This would be replaced with actual validation logic
-    
-    const mockResponse = { isValid, errors };
-    return this.httpService.post('/api/tertiary/validate', data, mockResponse);
+  getProjectObjectives() {
+    return this.httpService.get('/api/tertiary/project-objectives', this.mockData.projectObjectives);
   }
 
   /**
-   * Submit tertiary data source configuration
-   * @param {Object} data - Configuration data
-   * @returns {Promise} - Promise that resolves with submission result
+   * Get all resource types
+   * @returns {Promise} - Promise that resolves with the resource types
    */
-  submitConfiguration(data) {
-    // Mock successful submission
-    const mockResponse = {
-      success: true,
-      id: Math.floor(Math.random() * 10000),
-      message: 'Tertiary data source configuration submitted successfully'
-    };
-    
-    return this.httpService.post('/api/tertiary/submit', data, mockResponse);
+  getResourceTypes() {
+    return this.httpService.get('/api/tertiary/resource-types', this.mockData.resourceTypes);
+  }
+
+  /**
+   * Get all optimization strategies
+   * @returns {Promise} - Promise that resolves with the optimization strategies
+   */
+  getOptimizationStrategies() {
+    return this.httpService.get('/api/tertiary/optimization-strategies', this.mockData.optimizationStrategies);
   }
 }
 
