@@ -10,7 +10,11 @@ import { FormContainer } from './styled/FormElements';
  */
 const DynamicForm = ({ fields, values, onChange, errors }) => {
   const handleFieldChange = (name, value) => {
-    onChange({ ...values, [name]: value });
+    // Use a callback pattern to ensure we're working with the latest state
+    onChange(prevValues => ({
+      ...prevValues,
+      [name]: value
+    }));
   };
 
   if (!fields) {

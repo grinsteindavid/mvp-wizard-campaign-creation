@@ -31,15 +31,30 @@ const ProjectSetupStep = ({ dataSourceContext }) => {
 
   /**
    * Handle form field changes
-   * @param {object} newData - Updated form data
+   * @param {object|function} newDataOrUpdater - Updated form data or updater function
    */
-  const handleFormChange = (newData) => {
+  const handleFormChange = (newDataOrUpdater) => {
     // Use the data source context's updateField method instead of wizard context
     if (isContextValid && currentSource.updateField) {
-      // For each field in the new data, update it in the data source context
-      Object.entries(newData).forEach(([field, value]) => {
-        currentSource.updateField(field, value);
-      });
+      // Handle both direct objects and functional updates
+      if (typeof newDataOrUpdater === 'function') {
+        // If it's a function, apply it to the current state to get the new state
+        const currentState = currentSource.state || {};
+        const newData = newDataOrUpdater(currentState);
+        
+        // Then update each changed field
+        Object.entries(newData).forEach(([field, value]) => {
+          // Only update if the value has actually changed
+          if (currentState[field] !== value) {
+            currentSource.updateField(field, value);
+          }
+        });
+      } else {
+        // For direct object updates (backward compatibility)
+        Object.entries(newDataOrUpdater).forEach(([field, value]) => {
+          currentSource.updateField(field, value);
+        });
+      }
     }
   };
 
